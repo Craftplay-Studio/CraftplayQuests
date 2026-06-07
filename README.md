@@ -4,7 +4,7 @@ CraftplayQuests ist ein modulares Quest-, RPG-, NPC-, Achievement- und Statistik
 
 ## Projektstatus
 
-Aktueller Stand: Phase 1, Phase 2A, Phase 2B, Phase 3A und Phase 3B sind als technische Grundlage umgesetzt.
+Aktueller Stand: Phase 1 bis Phase 4A sind umgesetzt. Zusätzlich wurden die nächsten fünf Ausbauschritte direkt mitgezogen.
 
 - Maven-Projekt mit Java 21
 - Paper-API als bereitgestellte Compile-Abhängigkeit
@@ -15,7 +15,6 @@ Aktueller Stand: Phase 1, Phase 2A, Phase 2B, Phase 3A und Phase 3B sind als tec
 - Automatische `server.yml` mit Server-ID, Installations-Token, Recovery-Code und API-Tokens
 - Sprachsystem mit MiniMessage und UTF-8-Umlauten
 - Vollständige Sprachdateien für `de_DE`, `en_US`, `fr_FR`, `es_ES`, `it_IT`, `nl_NL`, `pl_PL`, `tr_TR`, `ru_RU` und `pt_BR`
-- Sprachkeys für Commands, GUIs, Quests, Ziele, Voraussetzungen, Belohnungen, Admin, NPCs, Dialoge, Titel, Achievements, Storage, Libraries, Hooks, Bedrock, Cache, Confirm, API, Import, VersionAdapter und Fehlerfälle
 - Erste frei konfigurierbare GUI-YAML-Dateien
 - MIT-Lizenz aus dem GitHub-Repository übernommen
 
@@ -39,7 +38,6 @@ Die Storage- und Library-Grundstruktur ist vorhanden:
 - Fallback auf YAML, wenn der konfigurierte Storage-Provider nicht initialisiert werden kann
 - `LibraryLoaderService` mit konfigurierbarem Library-Cache unter `lib`
 - Konfigurierbare Maven-Koordinaten für MySQL, MariaDB, H2 und Redis/Jedis
-- Automatischer Download fehlender Libraries, wenn `libraries.auto-download` aktiviert ist
 
 ## Phase 3A
 
@@ -50,7 +48,6 @@ Das Quest-Domain-Modell ist vorhanden:
 - `QuestObjective` mit `ObjectiveType`
 - `QuestRequirement` mit `RequirementType`
 - `QuestReward` mit `RewardType`
-- Grundvalidierung für Quest-IDs, Kategorien, Spieleranzahl, Ziele, Voraussetzungen und Belohnungen
 - Bukkit-freie Modelle, damit VersionAdapter und Hooks später sauber andocken können
 
 ## Phase 3B
@@ -61,10 +58,28 @@ Die Quest-Datenbasis und Service-Fassade sind vorhanden:
 - `QuestService` mit Registry- und PlayerData-Zugriff
 - `QuestRegistry` zum Laden, Speichern, Löschen und Auflisten von Quest-Dokumenten
 - `QuestSerializer` für YAML-Dokumente
-- `PlayerQuestData` und `PlayerQuestProgress`
-- `PlayerQuestDataRepository` mit Cache und Storage-Anbindung
+- `PlayerQuestData`, `PlayerQuestProgress` und `PlayerQuestDataRepository`
 - `PlayerQuestDataSerializer` für aktive, abgeschlossene und verfolgte Quests
-- Basisoperationen für Quest annehmen, abschließen, abbrechen, verfolgen und nicht mehr verfolgen
+
+## Phase 4A
+
+Die erste echte Laufzeitlogik ist vorhanden:
+
+- `ObjectiveService` prüft Ziel-Fortschritt und erkennt abgeschlossene Quests
+- `RequirementService` prüft interne Voraussetzungen wie aktiv, abgeschlossen, deaktiviert und benötigte Vorquests
+- `RewardService` erstellt Reward-Pläne und validiert Belohnungsdaten grob
+- `QuestService` nutzt Requirements beim Annehmen und Objectives beim Abschließen
+- Fortschritt wird in `PlayerQuestData` immutable aktualisiert und gespeichert
+
+## Direkt Mitgezogene Schritte
+
+Zusätzlich zu Phase 4A sind fünf nächste Schritte bereits umgesetzt:
+
+- Progress-Recording über `QuestApi#recordObjectiveProgress`
+- Erste Bukkit-Listener für Block abbauen, Block platzieren, Mob töten und Fishing
+- Automatische Quest-Abschlusserkennung nach Objective-Fortschritt
+- Spielerbefehle für `/quests accept`, `/quests complete`, `/quests cancel`, `/quests track` und `/quests untrack`
+- Automatischer Beispielquest-Seed `miner_story_01`, falls noch keine Quests existieren
 
 ## Build
 
@@ -85,7 +100,6 @@ Das fertige Plugin-JAR wird unter `target/CraftplayQuests-0.1.0-SNAPSHOT.jar` er
 
 Diese Systeme sind noch nicht implementiert und werden später phasenweise ergänzt:
 
-- Echte Gameplay-Fortschritte über Bukkit-/Paper-Events
 - Vollständige Requirement-Auswertung über Hooks, Items, Permissions, Jobs, Placeholder und Fraktionen
 - Vollständige Reward-Ausgabe mit Items, Geld, Commands, Permissions, Titeln und Achievements
 - MySQL-/MariaDB-StorageProvider und Redis-CacheProvider als produktive Provider
@@ -120,10 +134,9 @@ Diese Systeme sind noch nicht implementiert und werden später phasenweise ergä
 
 ## Nächste Phase
 
-Phase 4 soll die erste echte Laufzeitlogik ergänzen:
+Als Nächstes sollte Phase 4B folgen:
 
-- Objective-Service-Grundstruktur
-- Requirement-Service-Grundstruktur
-- Reward-Service-Grundstruktur
-- Erste interne Validierung beim Annehmen und Abschließen von Quests
-- Vorbereitung für Bukkit-Event-Listener ohne vollwertige Gameplay-Hooks
+- Requirement-Hooks vorbereiten
+- Reward-Ausführung für Commands und einfache interne Rewards
+- Admin-/Debug-Kommandos für Quest- und PlayerData-Inspektion
+- Erste Tests als Maven-Testquellen statt nur JShell-Smoke-Checks

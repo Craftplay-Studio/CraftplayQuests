@@ -1,11 +1,19 @@
 package de.craftplay.quests.quest.service;
 
 import de.craftplay.quests.CraftplayQuestsPlugin;
+import de.craftplay.quests.quest.model.ObjectiveType;
 import de.craftplay.quests.quest.model.Quest;
 import de.craftplay.quests.quest.model.QuestId;
+import de.craftplay.quests.quest.objective.ObjectiveProgressResult;
+import de.craftplay.quests.quest.objective.ObjectiveService;
 import de.craftplay.quests.quest.player.PlayerQuestData;
 import de.craftplay.quests.quest.player.PlayerQuestDataRepository;
 import de.craftplay.quests.quest.registry.QuestRegistry;
+import de.craftplay.quests.quest.requirement.RequirementCheckResult;
+import de.craftplay.quests.quest.requirement.RequirementService;
+import de.craftplay.quests.quest.reward.RewardPlan;
+import de.craftplay.quests.quest.reward.RewardService;
+import de.craftplay.quests.quest.seed.QuestSeedService;
 import de.craftplay.quests.storage.StorageService;
 import java.util.Collection;
 import java.util.Optional;
@@ -16,14 +24,23 @@ public final class QuestService implements QuestApi {
 
     private final QuestRegistry questRegistry;
     private final PlayerQuestDataRepository playerQuestDataRepository;
+    private final ObjectiveService objectiveService;
+    private final RequirementService requirementService;
+    private final RewardService rewardService;
+    private final QuestSeedService questSeedService;
 
     public QuestService(CraftplayQuestsPlugin plugin, StorageService storageService) {
         this.questRegistry = new QuestRegistry(plugin, storageService);
         this.playerQuestDataRepository = new PlayerQuestDataRepository(storageService);
+        this.objectiveService = new ObjectiveService();
+        this.requirementService = new RequirementService();
+        this.rewardService = new RewardService();
+        this.questSeedService = new QuestSeedService();
     }
 
     public CompletableFuture<Void> initialize() {
-        return questRegistry.loadAll();
+        return questRegistry.loadAll()
+            .thenCompose(ignored -> questSeedService.seedDefaults(questRegistry));
     }
 
     public CompletableFuture<Void> shutdown() {
@@ -57,8 +74,42 @@ public final class QuestService implements QuestApi {
     }
 
     @Override
+    public RequirementCheckResult canAccept(PlayerQuestData data, Quest quest) {
+        return requirementService.checkAccept(quest, data);
+    }
+
+    @Override
+    public RewardPlan rewardPlan(QuestId questId) {
+        Quest quest = questRegistry.find(questId)
+            .orElseThrow(() -> new IllegalArgumentException("Quest not found: " + questId.value()));
+        return rewardService.planRewards(quest);
+    }
+
+    @Override
     public CompletableFuture<PlayerQuestData> playerData(UUID playerId) {
         return playerQuestDataRepository.load(playerId);
+    }
+
+    @Override
+    public CompletableFuture<ObjectiveProgressResult> recordObjectiveProgress(
+        UUID playerId,
+        ObjectiveType type,
+        String target,
+        int amount
+    ) {
+        return playerQuestDataRepository.load(playerId).thenCompose(data -> {
+            Collection<Quest> activeQuests = data.activeQuests().keySet().stream()
+                .map(questRegistry::find)
+                .flatMap(Optional::stream)
+                .toList();
+
+            ObjectiveProgressResult result = objectiveService.applyProgress(data, activeQuests, type, target, amount);
+            if (!result.changed()) {
+                return CompletableFuture.completedFuture(result);
+            }
+
+            return playerQuestDataRepository.save(result.playerData()).thenApply(ignored -> result);
+        });
     }
 
     @Override
@@ -69,19 +120,10 @@ public final class QuestService implements QuestApi {
         }
 
         Quest quest = optionalQuest.get();
-        if (!quest.enabled()) {
-            return CompletableFuture.failedFuture(new IllegalStateException("Quest is disabled: " + questId.value()));
-        }
-
         return playerQuestDataRepository.load(playerId).thenCompose(data -> {
-            if (data.isActive(questId)) {
-                throw new IllegalStateException("Quest is already active: " + questId.value());
-            }
-            if (data.isCompleted(questId)) {
-                throw new IllegalStateException("Quest is already completed: " + questId.value());
-            }
-            if (!data.completedQuests().containsAll(quest.requiresCompleted())) {
-                throw new IllegalStateException("Quest requirements are not met: " + questId.value());
+            RequirementCheckResult requirementResult = requirementService.checkAccept(quest, data);
+            if (!requirementResult.allowed()) {
+                throw new IllegalStateException("Quest requirements are not met: " + String.join(",", requirementResult.missingReasons()));
             }
 
             PlayerQuestData updated = data.withActiveQuest(questId);
@@ -95,8 +137,14 @@ public final class QuestService implements QuestApi {
             if (!data.isActive(questId)) {
                 throw new IllegalStateException("Quest is not active: " + questId.value());
             }
+            Quest quest = questRegistry.find(questId)
+                .orElseThrow(() -> new IllegalArgumentException("Quest not found: " + questId.value()));
+            if (!objectiveService.isQuestComplete(quest, data)) {
+                throw new IllegalStateException("Quest objectives are not complete: " + questId.value());
+            }
 
             PlayerQuestData updated = data.withCompletedQuest(questId);
+            rewardService.planRewards(quest);
             return playerQuestDataRepository.save(updated).thenApply(ignored -> updated);
         });
     }

@@ -2,6 +2,7 @@ package de.craftplay.quests.core;
 
 import de.craftplay.quests.CraftplayQuestsPlugin;
 import de.craftplay.quests.library.LibraryLoaderService;
+import de.craftplay.quests.quest.listener.QuestProgressListener;
 import de.craftplay.quests.quest.service.QuestService;
 import de.craftplay.quests.scheduler.AsyncTaskService;
 import de.craftplay.quests.scheduler.MainThreadService;
@@ -28,6 +29,7 @@ public final class ServiceRegistry {
         this.libraryLoaderService = new LibraryLoaderService(plugin, asyncTaskService);
         this.storageService = new StorageService(plugin, asyncTaskService, libraryLoaderService);
         this.questService = new QuestService(plugin, storageService);
+        plugin.getServer().getPluginManager().registerEvents(new QuestProgressListener(plugin), plugin);
 
         libraryLoaderService.prepareConfiguredLibraries()
             .handle((report, throwable) -> {

@@ -64,4 +64,14 @@ public record PlayerQuestData(
     public PlayerQuestData withTrackedQuest(Optional<QuestId> questId) {
         return new PlayerQuestData(playerId, activeQuests, completedQuests, questId, System.currentTimeMillis());
     }
+
+    public Optional<PlayerQuestProgress> progress(QuestId questId) {
+        return Optional.ofNullable(activeQuests.get(questId));
+    }
+
+    public PlayerQuestData withProgress(PlayerQuestProgress progress) {
+        Map<QuestId, PlayerQuestProgress> active = new LinkedHashMap<>(activeQuests);
+        active.put(progress.questId(), progress);
+        return new PlayerQuestData(playerId, active, completedQuests, trackedQuest, System.currentTimeMillis());
+    }
 }

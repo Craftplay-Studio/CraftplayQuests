@@ -15,6 +15,7 @@ Aktueller Stand: Phase 1 ist umgesetzt.
 - Automatische `server.yml` mit Server-ID, Installations-Token, Recovery-Code und API-Tokens
 - Sprachsystem mit MiniMessage und UTF-8-Umlauten
 - Erste frei konfigurierbare GUI-YAML-Dateien
+- MIT-Lizenz aus dem GitHub-Repository übernommen
 
 ## Build
 

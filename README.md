@@ -4,7 +4,7 @@ CraftplayQuests ist ein modulares Quest-, RPG-, NPC-, Achievement- und Statistik
 
 ## Projektstatus
 
-Aktueller Stand: Phase 1 ist umgesetzt und der vollständige Sprachkatalog für die geplanten Module ist vorbereitet.
+Aktueller Stand: Phase 1, Phase 2A und Phase 2B sind als technische Grundlage umgesetzt.
 
 - Maven-Projekt mit Java 21
 - Paper-API als bereitgestellte Compile-Abhängigkeit
@@ -18,6 +18,28 @@ Aktueller Stand: Phase 1 ist umgesetzt und der vollständige Sprachkatalog für 
 - Sprachkeys für Commands, GUIs, Quests, Ziele, Voraussetzungen, Belohnungen, Admin, NPCs, Dialoge, Titel, Achievements, Storage, Libraries, Hooks, Bedrock, Cache, Confirm, API, Import, VersionAdapter und Fehlerfälle
 - Erste frei konfigurierbare GUI-YAML-Dateien
 - MIT-Lizenz aus dem GitHub-Repository übernommen
+
+## Phase 2A
+
+Die technische Threading- und Service-Basis ist vorhanden:
+
+- `ServiceRegistry` für zentrale Service-Initialisierung und sauberen Shutdown
+- `AsyncTaskService` mit konfigurierbarer Worker-Anzahl über `performance.async-workers`
+- `MainThreadService` als zentrale Brücke für spätere Bukkit-/Paper-Zugriffe auf dem Mainthread
+- `TaskResult` und `TaskCallback` für async vorbereitete Arbeit mit Rückmeldung auf den Mainthread
+
+## Phase 2B
+
+Die Storage- und Library-Grundstruktur ist vorhanden:
+
+- `StorageProvider`-Interface für dokumentenbasierte Speicheroperationen
+- `StorageService` mit Provider-Auswahl über `storage.type`
+- `YamlStorageProvider` für lokale YAML-Dokumente unter `save/yaml`
+- `H2StorageProvider` als JDBC-Grundspeicher mit Dokumenttabelle
+- Fallback auf YAML, wenn der konfigurierte Storage-Provider nicht initialisiert werden kann
+- `LibraryLoaderService` mit konfigurierbarem Library-Cache unter `lib`
+- Konfigurierbare Maven-Koordinaten für MySQL, MariaDB, H2 und Redis/Jedis
+- Automatischer Download fehlender Libraries, wenn `libraries.auto-download` aktiviert ist
 
 ## Build
 
@@ -40,9 +62,8 @@ Diese Systeme sind noch nicht implementiert und werden später phasenweise ergä
 
 - Echte Questlogik, Quest-Modell, Quest-Registry, Quest-API und Quest-Data
 - Ziele, Voraussetzungen und Belohnungen mit Laufzeitlogik
-- Storage-System mit YAML, H2, MySQL, MariaDB und Redis
-- AsyncTaskService, MainThreadService, DirtyQueue und Batch-Saves
-- LibraryLoaderService für Datenbank- und Redis-Libraries
+- MySQL-/MariaDB-StorageProvider und Redis-CacheProvider als produktive Provider
+- DirtyQueue, Batch-Saves und Storage-Migrationen
 - Laufendes GUI-System mit Inventaröffnung und Klickverarbeitung
 - PlaceholderAPI-Integration
 - Citizens-NPC-System
@@ -63,7 +84,7 @@ Diese Systeme sind noch nicht implementiert und werden später phasenweise ergä
 - Keine festen Texte im Code
 - Keine festen GUI-Slots im Code
 - Minecraft-/Bukkit-Objekte nur auf dem Mainthread verändern
-- Datenbank-, Datei-, Import- und Cache-Arbeit später konsequent async ausführen
+- Datenbank-, Datei-, Import- und Cache-Arbeit konsequent async ausführen
 - GUI-Dateien liegen in `gui/`
 - Sprachdateien liegen in `language/`
 - Lokale Daten liegen unter `save/`
@@ -73,10 +94,11 @@ Diese Systeme sind noch nicht implementiert und werden später phasenweise ergä
 
 ## Nächste Phase
 
-Phase 2 soll die technische Basis für Async- und Storage-Arbeit ergänzen:
+Phase 3 soll das eigentliche Quest-Fundament ergänzen:
 
-- `AsyncTaskService`
-- `MainThreadService`
-- `StorageProvider`-Interface
-- YAML-/H2-Grundspeicher
-- `LibraryLoaderService`
+- Quest-Modell
+- QuestRegistry
+- PlayerQuestData
+- Objective-System
+- Requirement-System
+- Reward-System

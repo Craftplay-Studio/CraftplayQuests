@@ -3,6 +3,7 @@ package de.craftplay.quests;
 import de.craftplay.quests.command.QuestsCommand;
 import de.craftplay.quests.config.ConfigBootstrapService;
 import de.craftplay.quests.config.ServerSettingsService;
+import de.craftplay.quests.core.ServiceRegistry;
 import de.craftplay.quests.language.LanguageService;
 import java.io.IOException;
 import org.bukkit.command.PluginCommand;
@@ -13,6 +14,7 @@ public final class CraftplayQuestsPlugin extends JavaPlugin {
     private ConfigBootstrapService configBootstrapService;
     private ServerSettingsService serverSettingsService;
     private LanguageService languageService;
+    private ServiceRegistry services;
 
     @Override
     public void onEnable() {
@@ -31,6 +33,8 @@ public final class CraftplayQuestsPlugin extends JavaPlugin {
         this.serverSettingsService.reload();
         this.languageService = new LanguageService(this);
         this.languageService.reload();
+        this.services = new ServiceRegistry(this);
+        this.services.initialize();
 
         registerCommands();
 
@@ -39,6 +43,9 @@ public final class CraftplayQuestsPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (services != null) {
+            services.shutdown();
+        }
         getLogger().info("CraftplayQuests disabled.");
     }
 
@@ -58,6 +65,10 @@ public final class CraftplayQuestsPlugin extends JavaPlugin {
 
     public ServerSettingsService serverSettings() {
         return serverSettingsService;
+    }
+
+    public ServiceRegistry services() {
+        return services;
     }
 
     private void registerCommands() {

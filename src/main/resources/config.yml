@@ -42,6 +42,27 @@ libraries:
     mariadb: true
     h2: true
     redis: true
+  artifacts:
+    mysql:
+      group-id: "com.mysql"
+      artifact-id: "mysql-connector-j"
+      version: "9.7.0"
+      driver-class: "com.mysql.cj.jdbc.Driver"
+    mariadb:
+      group-id: "org.mariadb.jdbc"
+      artifact-id: "mariadb-java-client"
+      version: "3.5.8"
+      driver-class: "org.mariadb.jdbc.Driver"
+    h2:
+      group-id: "com.h2database"
+      artifact-id: "h2"
+      version: "2.4.240"
+      driver-class: "org.h2.Driver"
+    redis:
+      group-id: "redis.clients"
+      artifact-id: "jedis"
+      version: "7.5.2"
+      driver-class: ""
 
 performance:
   async-workers: 4

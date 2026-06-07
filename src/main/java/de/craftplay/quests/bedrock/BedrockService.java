@@ -24,4 +24,13 @@ public final class BedrockService {
             return false;
         }
     }
+
+    public boolean tryOpenFormFallback(Player player) {
+        if (!isBedrockPlayer(player)) {
+            return false;
+        }
+        plugin.language().send(player, "bedrock.chest-gui-blocked");
+        plugin.language().send(player, "bedrock.forms-unavailable");
+        return true;
+    }
 }

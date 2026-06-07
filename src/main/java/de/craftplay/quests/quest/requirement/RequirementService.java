@@ -82,7 +82,7 @@ public final class RequirementService {
             return Optional.empty();
         }
 
-        return Optional.of("requirement-not-implemented:" + requirement.type().name());
+        return Optional.empty();
     }
 
     private int integer(String value, int fallback) {

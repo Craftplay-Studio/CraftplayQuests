@@ -5,14 +5,13 @@ import de.craftplay.quests.quest.model.QuestId;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 
 public final class DialogService {
 
     private final CraftplayQuestsPlugin plugin;
-    private final MiniMessage miniMessage = MiniMessage.miniMessage();
     private final Map<UUID, Long> offers = new ConcurrentHashMap<>();
 
     public DialogService(CraftplayQuestsPlugin plugin) {
@@ -21,11 +20,13 @@ public final class DialogService {
 
     public void offerQuest(Player player, QuestId questId) {
         offers.put(player.getUniqueId(), System.currentTimeMillis());
-        player.sendMessage(miniMessage.deserialize("<gold>Quest: <yellow>" + questId.value() + "</yellow> ")
-            .append(miniMessage.deserialize("<green>[Annehmen]</green>")
+        Component message = plugin.language().message("dialog.quest-offer", Map.of("quest", questId.value()))
+            .append(Component.space())
+            .append(plugin.language().message("dialog.accept-button")
                 .clickEvent(ClickEvent.runCommand("/quests accept " + questId.value())))
-            .append(miniMessage.deserialize(" "))
-            .append(miniMessage.deserialize("<red>[Ablehnen]</red>")
-                .clickEvent(ClickEvent.runCommand("/quests cancel " + questId.value()))));
+            .append(Component.space())
+            .append(plugin.language().message("dialog.decline-button")
+                .clickEvent(ClickEvent.runCommand("/quests cancel " + questId.value())));
+        player.sendMessage(message);
     }
 }

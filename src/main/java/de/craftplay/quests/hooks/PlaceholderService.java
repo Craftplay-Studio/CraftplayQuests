@@ -25,7 +25,7 @@ public final class PlaceholderService {
                 .replace("%cpquests_points%", String.valueOf(data.questPoints()))
                 .replace("%cpquests_reputation%", String.valueOf(data.reputation()))
                 .replace("%cpquests_achievements%", String.valueOf(data.achievements().size()))
-                .replace("%cpquests_title%", data.unlockedTitles().stream().findFirst().orElse(""));
+                .replace("%cpquests_title%", plugin.services().titles().selectedTitle(data).orElse(""));
         }
         output = output.replace("%player%", player.getName());
         return applyPlaceholderApi(player, output);

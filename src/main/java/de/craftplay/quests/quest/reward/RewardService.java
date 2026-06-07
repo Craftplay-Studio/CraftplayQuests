@@ -66,6 +66,12 @@ public final class RewardService {
         if (reward.type() == RewardType.PERMISSION) {
             grantPermissionReward(data, reward);
         }
+        if (reward.type() == RewardType.HEAD) {
+            giveHeadReward(data, reward);
+        }
+        if (reward.type() == RewardType.CUSTOM_ITEM) {
+            giveCustomItemReward(data, reward);
+        }
         return data;
     }
 
@@ -104,7 +110,17 @@ public final class RewardService {
 
     private void depositMoneyReward(PlayerQuestData data, QuestReward reward) {
         double amount = decimal(reward, "amount", 0.0D);
-        if (amount <= 0.0D || !plugin.services().hooks().enabled("Vault")) {
+        if (amount <= 0.0D) {
+            return;
+        }
+        if (!plugin.services().hooks().enabled("Vault")) {
+            if (plugin.services().hooks().enabled("CMI")) {
+                dispatchCommandReward(data, new QuestReward(
+                    reward.id() + "_cmi_money",
+                    RewardType.COMMAND,
+                    java.util.Map.of("command", "cmi money give %player% " + amount)
+                ));
+            }
             return;
         }
 
@@ -135,6 +151,46 @@ public final class RewardService {
             String target = player == null ? data.playerId().toString() : player.getName();
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + target + " permission set " + permission + " true");
         });
+    }
+
+    private void giveHeadReward(PlayerQuestData data, QuestReward reward) {
+        String headId = reward.data().getOrDefault("head", reward.data().getOrDefault("id", ""));
+        int amount = Math.max(1, integer(reward, "amount", 1));
+        if (headId.isBlank()) {
+            return;
+        }
+
+        if (plugin.services().hooks().enabled("HeadDatabase")) {
+            dispatchCommandReward(data, new QuestReward(
+                reward.id() + "_hdb",
+                RewardType.COMMAND,
+                java.util.Map.of("command", "hdb give %player% " + headId + " " + amount)
+            ));
+            return;
+        }
+
+        dispatchCommandReward(data, new QuestReward(
+            reward.id() + "_head_fallback",
+            RewardType.COMMAND,
+            java.util.Map.of("command", "minecraft:give %player% player_head " + amount)
+        ));
+    }
+
+    private void giveCustomItemReward(PlayerQuestData data, QuestReward reward) {
+        String command = reward.data().get("command");
+        if (command != null && !command.isBlank()) {
+            dispatchCommandReward(data, reward);
+            return;
+        }
+        String material = reward.data().getOrDefault("material", "PAPER");
+        giveItemReward(data, new QuestReward(
+            reward.id() + "_custom_fallback",
+            RewardType.ITEM,
+            java.util.Map.of(
+                "material", material,
+                "amount", reward.data().getOrDefault("amount", "1")
+            )
+        ));
     }
 
     private int integer(QuestReward reward, String key, int fallback) {

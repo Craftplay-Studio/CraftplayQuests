@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 
 public final class QuestProgressListener implements Listener {
@@ -50,6 +51,20 @@ public final class QuestProgressListener implements Listener {
             ? item.getItemStack().getType().name()
             : "*";
         record(event.getPlayer(), ObjectiveType.FISHING, target, 1);
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        plugin.services().quests().cleanupExpiredQuestData(player.getUniqueId())
+            .whenComplete((result, throwable) -> plugin.services().mainThread().execute(() -> {
+                if (throwable != null) {
+                    return;
+                }
+                if (result.removedQuests() > 0 && plugin.getConfig().getBoolean("quest-resets.expired-quests.notify-player", true)) {
+                    plugin.language().send(player, "quest.reset.expired-login");
+                }
+            }));
     }
 
     private void record(Player player, ObjectiveType type, String target, int amount) {

@@ -45,6 +45,10 @@ public final class GuiService {
         openConfigured(player, "achievements.yml", "achievements", "<gold>Achievements</gold>");
     }
 
+    public void openAdmin(Player player) {
+        openConfigured(player, "admin_main.yml", "admin_main", "<dark_red>CraftplayQuests Admin</dark_red>");
+    }
+
     public void openPlayerQuests(Player player) {
         Inventory inventory = Bukkit.createInventory(new QuestMenuHolder("player_quests"), 54, miniMessage.deserialize("<gold>Meine Quests</gold>"));
         int slot = 10;

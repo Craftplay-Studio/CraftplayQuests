@@ -39,6 +39,11 @@ commands:
   debug-storage: "{prefix} <gray>Storage: <yellow>{storage}</yellow> | Квесты: <yellow>{quests}</yellow> | API: <yellow>{api}</yellow></gray>"
   debug-version: "{prefix} <gray>Adapter: <yellow>{adapter}</yellow> | Версия: <yellow>{version}</yellow> | TextDisplay: <yellow>{text_display}</yellow></gray>"
   debug-hook: "{prefix} <gray>Hook <yellow>{hook}</yellow>: <yellow>{enabled}</yellow></gray>"
+  admin-give: "{prefix} <green>Квест <yellow>{quest}</yellow> выдан игроку <yellow>{player}</yellow>.</green>"
+  admin-reset: "{prefix} <yellow>Квест <gold>{quest}</gold> сброшен для <gold>{player}</gold>.</yellow>"
+  admin-complete: "{prefix} <green>Квест <yellow>{quest}</yellow> завершён для <yellow>{player}</yellow>.</green>"
+  export-created: "{prefix} <green>Экспорт создан: <yellow>{file}</yellow></green>"
+  npc-list-entry: "{prefix} <gray>NPC <yellow>{npc}</yellow> - {name} | Квесты: <yellow>{quests}</yellow></gray>"
   help:
     - "{prefix} <yellow>/quests</yellow> <gray>- открывает меню квестов.</gray>"
     - "{prefix} <yellow>/quests active</yellow> <gray>- показывает активные квесты.</gray>"
@@ -177,6 +182,7 @@ npc:
   rotation-updated: "{prefix} <green>Ротация квестов обновлена.</green>"
 
 dialog:
+  quest-offer: "{prefix} <gold>Квест: <yellow>{quest}</yellow></gold>"
   offer-expired: "{prefix} <red>Это предложение квеста истекло.</red>"
   accept-button: "<green>[Принять]</green>"
   decline-button: "<red>[Отклонить]</red>"

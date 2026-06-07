@@ -18,6 +18,22 @@ Aktueller Stand: Phase 1 bis Phase 9 sind als startfähiger Plugin-MVP umgesetzt
 - Erste frei konfigurierbare GUI-YAML-Dateien
 - MIT-Lizenz aus dem GitHub-Repository übernommen
 
+## Komplett Nachgezogene Restplanung
+
+Der zweite Ausbau hat die offenen Planpunkte aus Phase 9 und Phase 10 in den Kern integriert:
+
+- MySQL- und MariaDB-StorageProvider mit dynamisch geladenen JDBC-Treibern
+- DirtyQueue mit Batch-Flush und konfigurierbarem Flush-Intervall
+- Redis-Cache-/Sync-Service über Jedis-Reflection, optional und fehlertolerant
+- Confirm-Code-System für gefährliche Admin-Aktionen
+- Audit-Log unter `logs/audit.log`
+- Cache-Service für Skin-/Head-Cache-Info und Cache-Löschung
+- Export- und Backup-Service mit ZIP-Erzeugung unter `save/exports` und `save/backups`
+- Persistentes NPC-System mit CPQ-ID, Citizens-ID, Skin, Standort, Quests und Routenpunkten
+- Best-Effort-Importer für QuestsPlugin-YAMLs aus `import/questsplugin`
+- StatsService mit gecachten Übersichten und Top-Spieler-Daten
+- Advancement-Asset-Generator als Datapack-Struktur unter `save/exports/datapack`
+
 ## Phase 2A
 
 Die technische Threading- und Service-Basis ist vorhanden:
@@ -35,9 +51,12 @@ Die Storage- und Library-Grundstruktur ist vorhanden:
 - `StorageService` mit Provider-Auswahl über `storage.type`
 - `YamlStorageProvider` für lokale YAML-Dokumente unter `save/yaml`
 - `H2StorageProvider` als JDBC-Grundspeicher mit Dokumenttabelle
+- `MySqlStorageProvider` und `MariaDbStorageProvider` für produktive Datenbanken
+- DirtyQueue für zusammengefasste Schreibvorgänge
 - Fallback auf YAML, wenn der konfigurierte Storage-Provider nicht initialisiert werden kann
 - `LibraryLoaderService` mit konfigurierbarem Library-Cache unter `lib`
 - Konfigurierbare Maven-Koordinaten für MySQL, MariaDB, H2 und Redis/Jedis
+- `RedisCacheService` für optionalen Cache, Netzwerk-Sync und Leaderboard-Cache
 
 ## Phase 3A
 
@@ -86,10 +105,12 @@ Zusätzlich zu Phase 4A sind fünf nächste Schritte bereits umgesetzt:
 Die Questlogik wurde erweitert:
 
 - Interne Requirements für abgeschlossene Vorquests, Ruf, Titel und Achievements
+- Mainthread-sichere externe Requirements für Permissions, Items und Placeholder
 - Belohnungen für Questpunkte, Ruf, Titel, Achievements und Konsolenbefehle
 - Item-Rewards über Bukkit-Materialien
 - Vault-Geldbelohnungen über optionale Reflection, wenn Vault vorhanden ist
 - LuckPerms-Permissions über Konsolenkommando-Fallback, wenn LuckPerms vorhanden ist
+- HeadDatabase- und CustomItem-Rewards über Hook-/Command-Fallbacks
 - Achievement-Freischaltung beim Questabschluss inklusive erstem Questabschluss
 
 ## Phase 5
@@ -100,6 +121,7 @@ Das Spieler-GUI-System ist vorhanden:
 - `/quests` öffnet für Spieler das Hauptmenü
 - Inventarklicks werden über `GuiListener` verarbeitet
 - Questliste und Quest-Annahme sind über GUI-Aktionen angebunden
+- GUI-Aktionen für Back, Close, Admin, Abenteuerbuch, Achievements, Track, Cancel, Player-Command, Console-Command, Message und Sound
 - Bedrock-Erkennung über Floodgate ist vorbereitet, Chest-GUI kann später durch Forms ersetzt werden
 
 ## Phase 6
@@ -110,17 +132,20 @@ Die Integrations- und Versionsbasis ist vorhanden:
 - Interne Placeholder-Ersetzung für aktive, abgeschlossene und verfolgte Questdaten
 - PlaceholderAPI-Auswertung über Reflection, wenn PlaceholderAPI vorhanden ist
 - VersionAdapter-Erkennung für 1.21.x, 1.21.6+ und zukünftige 26.1.x-Familien
-- Services für Daily-/Weekly-Reset-Prüfung, NPC-Verknüpfungen, Dialog-Angebote und Titelstatus
+- Services für Daily-/Weekly-Reset-Cleanup beim Login, NPC-Verknüpfungen, Dialog-Angebote und Titelstatus
+- Spieler können freigeschaltete Titel mit `/quests title <titel>` auswählen und mit `/quests title clear` entfernen
 
 ## Phase 7
 
 API-, Import- und externe Verwaltungsgrundlagen sind vorhanden:
 
-- Lokale HTTP-API unter `/api/health`, `/api/stats/overview` und `/api/admin/quests`
+- Lokale HTTP-API unter `/api/health`, `/api/stats/overview`, `/api/stats/top-players`, `/api/stats/player/{uuid}`, `/api/admin/quests`, `/api/admin/npcs`, `/api/admin/import`, `/api/admin/cache` und `/api/admin/export`
 - API ist standardmäßig deaktiviert und nutzt die Tokens aus `server.yml`
-- Konfiguration unter `api.enabled`, `api.host`, `api.port` und `api.worker-threads`
-- Import-Service erzeugt einen Report für spätere QuestsPlugin-Importläufe
-- Server-ID, Storage, Hooks, Version und Questliste sind über die API auslesbar
+- Konfiguration unter `api.enabled`, `api.host`, `api.port`, `api.rate-limit-per-minute` und `api.worker-threads`
+- Quest-CRUD ist über YAML-Body und Token-Schutz angebunden
+- NPC-List/Create/Delete ist über die API angebunden
+- Import-Service erzeugt Backup und Report für QuestsPlugin-Importläufe
+- Server-ID, Storage, Hooks, Version, Questliste, Spielerstatistiken, Cache und Exports sind über die API auslesbar
 
 ## Phase 8
 
@@ -131,6 +156,14 @@ Admin-, Debug- und Inspect-Befehle sind vorhanden:
 - `/quests progress [player]` zeigt Spielerfortschritt
 - `/quests debug hooks|storage|version|services` zeigt Laufzeitstatus
 - `/quests import questsplugin` erzeugt einen Import-Report
+- `/quests admin` und `/quests editor` öffnen das Admin-Menü
+- `/quests give <player> <questId>` gibt einem Spieler eine Quest
+- `/quests complete <player> <questId>` schließt eine Quest administrativ ab
+- `/quests reset <player> <questId>` setzt eine Quest zurück
+- `/quests cache info` und `/quests cache clear <skins|heads|all>` verwalten Cache-Daten
+- `/quests confirm <code>` bestätigt gefährliche Aktionen
+- `/quests export` und `/quests backup` erzeugen ZIP-Dateien
+- `/quests npc ...` verwaltet CPQ-NPCs, Questzuordnung, Skin, Standort und Routenpunkte
 
 ## Phase 9
 
@@ -140,7 +173,7 @@ Die erste Testbasis ist vorhanden:
 - Quest-Serializer-Roundtrip wird getestet
 - Objective-Fortschritt und Completion-Erkennung werden getestet
 - Requirement-Auswertung für Vorquests, Ruf, Titel und Achievements wird getestet
-- PlayerQuestData-Serialisierung inklusive Punkte, Ruf, Titel und Achievements wird getestet
+- PlayerQuestData-Serialisierung inklusive Punkte, Ruf, ausgewähltem Titel und Achievements wird getestet
 
 ## Build
 
@@ -163,10 +196,12 @@ Der Plugin-Kern ist jetzt gebaut. Vor einem produktiven Release fehlen vor allem
 
 - Start auf Paper/Purpur mit Java 21
 - Questannahme, Fortschritt, Abschluss, Speicherung und GUI-Klicks im Spiel
-- H2- und YAML-Fallback mit echten Plugin-Datenordnern
-- Optionale Hook-Tests mit PlaceholderAPI, Citizens, Floodgate, LuckPerms und Vault
+- H2-, YAML-, MySQL- und MariaDB-Fallbacks mit echten Plugin-Datenordnern
+- Redis mit echtem Redis-Server
+- Optionale Hook-Tests mit PlaceholderAPI, Citizens, Floodgate, LuckPerms, Vault und HeadDatabase
 - HTTP-API mit echten `server.yml`-Tokens
-- Import-Report und spätere echte Import-Migrationen
+- Import von realen QuestsPlugin-Dateien
+- Datapack-/Advancement-Dateien im Serverbetrieb
 
 ## Entwicklungsregeln
 
@@ -181,11 +216,6 @@ Der Plugin-Kern ist jetzt gebaut. Vor einem produktiven Release fehlen vor allem
 - `.editorconfig` erzwingt UTF-8 als Projektstandard
 - `.gitattributes` hält UTF-8-Dateien und LF-Zeilenenden im Repository stabil
 
-## Nächste Phase
+## Nächster Schritt
 
-Als Nächstes sollte Phase 4B folgen:
-
-- Requirement-Hooks vorbereiten
-- Reward-Ausführung für Commands und einfache interne Rewards
-- Admin-/Debug-Kommandos für Quest- und PlayerData-Inspektion
-- Erste Tests als Maven-Testquellen statt nur JShell-Smoke-Checks
+Der Code ist jetzt für einen Server-Smoke-Test bereit. Die nächste Arbeit ist kein weiterer Planungsblock, sondern Testen auf einem echten Paper-/Purpur-Server mit Java 21 und den gewünschten Hook-Plugins.

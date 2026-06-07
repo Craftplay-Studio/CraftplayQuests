@@ -24,6 +24,7 @@ public final class PlayerQuestDataSerializer {
         configuration.set("titles", data.unlockedTitles().stream().sorted().toList());
         configuration.set("achievements", data.achievements().stream().sorted().toList());
         data.trackedQuest().ifPresent(questId -> configuration.set("tracked", questId.value()));
+        data.selectedTitle().ifPresent(title -> configuration.set("selected-title", title));
 
         for (PlayerQuestProgress progress : data.activeQuests().values()) {
             String path = "active." + progress.questId().value();
@@ -70,6 +71,7 @@ public final class PlayerQuestDataSerializer {
             configuration.getInt("reputation", 0),
             Set.copyOf(configuration.getStringList("titles")),
             Set.copyOf(configuration.getStringList("achievements")),
+            Optional.ofNullable(configuration.getString("selected-title")),
             configuration.getLong("updated-at", System.currentTimeMillis())
         );
     }

@@ -5,6 +5,8 @@ import de.craftplay.quests.achievement.AchievementService;
 import de.craftplay.quests.quest.model.ObjectiveType;
 import de.craftplay.quests.quest.model.Quest;
 import de.craftplay.quests.quest.model.QuestId;
+import de.craftplay.quests.quest.model.QuestRequirement;
+import de.craftplay.quests.quest.model.RequirementType;
 import de.craftplay.quests.quest.objective.ObjectiveProgressResult;
 import de.craftplay.quests.quest.objective.ObjectiveService;
 import de.craftplay.quests.quest.player.PlayerQuestData;
@@ -15,21 +17,29 @@ import de.craftplay.quests.quest.requirement.RequirementService;
 import de.craftplay.quests.quest.reward.RewardPlan;
 import de.craftplay.quests.quest.reward.RewardService;
 import de.craftplay.quests.quest.seed.QuestSeedService;
+import de.craftplay.quests.reset.ResetService;
 import de.craftplay.quests.storage.StorageService;
 import de.craftplay.quests.scheduler.MainThreadService;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public final class QuestService implements QuestApi {
 
+    private final CraftplayQuestsPlugin plugin;
     private final QuestRegistry questRegistry;
     private final PlayerQuestDataRepository playerQuestDataRepository;
     private final ObjectiveService objectiveService;
     private final RequirementService requirementService;
     private final RewardService rewardService;
     private final AchievementService achievementService;
+    private final MainThreadService mainThreadService;
     private final QuestSeedService questSeedService;
 
     public QuestService(
@@ -38,12 +48,14 @@ public final class QuestService implements QuestApi {
         MainThreadService mainThreadService,
         AchievementService achievementService
     ) {
+        this.plugin = plugin;
         this.questRegistry = new QuestRegistry(plugin, storageService);
         this.playerQuestDataRepository = new PlayerQuestDataRepository(storageService);
         this.objectiveService = new ObjectiveService();
         this.requirementService = new RequirementService();
         this.rewardService = new RewardService(plugin, mainThreadService);
         this.achievementService = achievementService;
+        this.mainThreadService = mainThreadService;
         this.questSeedService = new QuestSeedService();
     }
 
@@ -100,6 +112,16 @@ public final class QuestService implements QuestApi {
     }
 
     @Override
+    public CompletableFuture<PlayerQuestData> savePlayerData(PlayerQuestData data) {
+        return playerQuestDataRepository.save(data).thenApply(ignored -> data);
+    }
+
+    @Override
+    public CompletableFuture<List<PlayerQuestData>> allPlayerData() {
+        return playerQuestDataRepository.loadAll();
+    }
+
+    @Override
     public Optional<PlayerQuestData> cachedPlayerData(UUID playerId) {
         return playerQuestDataRepository.cached(playerId);
     }
@@ -139,9 +161,13 @@ public final class QuestService implements QuestApi {
             if (!requirementResult.allowed()) {
                 throw new IllegalStateException("Quest requirements are not met: " + String.join(",", requirementResult.missingReasons()));
             }
-
-            PlayerQuestData updated = data.withActiveQuest(questId);
-            return playerQuestDataRepository.save(updated).thenApply(ignored -> updated);
+            return externalRequirementsAllowed(playerId, quest).thenCompose(externalResult -> {
+                if (!externalResult.allowed()) {
+                    throw new IllegalStateException("Quest external requirements are not met: " + String.join(",", externalResult.missingReasons()));
+                }
+                PlayerQuestData updated = data.withActiveQuest(questId);
+                return playerQuestDataRepository.save(updated).thenApply(ignored -> updated);
+            });
         });
     }
 
@@ -170,6 +196,28 @@ public final class QuestService implements QuestApi {
     }
 
     @Override
+    public CompletableFuture<PlayerQuestData> forceCompleteQuest(UUID playerId, QuestId questId) {
+        Optional<Quest> optionalQuest = questRegistry.find(questId);
+        if (optionalQuest.isEmpty()) {
+            return CompletableFuture.failedFuture(new IllegalArgumentException("Quest not found: " + questId.value()));
+        }
+
+        Quest quest = optionalQuest.get();
+        return playerQuestDataRepository.load(playerId).thenCompose(data -> {
+            boolean firstCompletedQuest = data.completedQuests().isEmpty();
+            PlayerQuestData base = data.isActive(questId) ? data : data.withActiveQuest(questId);
+            PlayerQuestData completed = base.withCompletedQuest(questId);
+            PlayerQuestData withAchievements = achievementService.applyQuestCompletionAchievements(
+                completed,
+                questId,
+                firstCompletedQuest
+            );
+            PlayerQuestData updated = rewardService.applyRewards(withAchievements, quest);
+            return playerQuestDataRepository.save(updated).thenApply(ignored -> updated);
+        });
+    }
+
+    @Override
     public CompletableFuture<PlayerQuestData> cancelQuest(UUID playerId, QuestId questId) {
         return playerQuestDataRepository.load(playerId).thenCompose(data -> {
             if (!data.isActive(questId)) {
@@ -178,6 +226,29 @@ public final class QuestService implements QuestApi {
 
             PlayerQuestData updated = data.withoutActiveQuest(questId);
             return playerQuestDataRepository.save(updated).thenApply(ignored -> updated);
+        });
+    }
+
+    @Override
+    public CompletableFuture<PlayerQuestData> resetQuest(UUID playerId, QuestId questId) {
+        return playerQuestDataRepository.load(playerId).thenCompose(data -> {
+            PlayerQuestData updated = data.withoutActiveQuest(questId).withoutCompletedQuest(questId);
+            return playerQuestDataRepository.save(updated).thenApply(ignored -> updated);
+        });
+    }
+
+    @Override
+    public CompletableFuture<PlayerQuestData> cleanupExpiredQuests(UUID playerId) {
+        return cleanupExpiredQuestData(playerId).thenApply(ResetService.ResetCleanupResult::data);
+    }
+
+    public CompletableFuture<ResetService.ResetCleanupResult> cleanupExpiredQuestData(UUID playerId) {
+        return playerQuestDataRepository.load(playerId).thenCompose(data -> {
+            var result = plugin.services().resets().cleanupExpiredQuests(data);
+            if (result.removedQuests() <= 0) {
+                return CompletableFuture.completedFuture(result);
+            }
+            return playerQuestDataRepository.save(result.data()).thenApply(ignored -> result);
         });
     }
 
@@ -199,5 +270,68 @@ public final class QuestService implements QuestApi {
             PlayerQuestData updated = data.withTrackedQuest(Optional.empty());
             return playerQuestDataRepository.save(updated).thenApply(ignored -> updated);
         });
+    }
+
+    private CompletableFuture<RequirementCheckResult> externalRequirementsAllowed(UUID playerId, Quest quest) {
+        return mainThreadService.supply(() -> {
+            Player player = Bukkit.getPlayer(playerId);
+            java.util.ArrayList<String> missing = new java.util.ArrayList<>();
+            for (QuestRequirement requirement : quest.requirements()) {
+                if (requirement.type() == RequirementType.PERMISSION && !permissionAllowed(player, requirement)) {
+                    missing.add("permission:" + requirement.target());
+                }
+                if (requirement.type() == RequirementType.ITEM && !itemAllowed(player, requirement)) {
+                    missing.add("item:" + requirement.target());
+                }
+                if (requirement.type() == RequirementType.PLACEHOLDER && !placeholderAllowed(player, requirement)) {
+                    missing.add("placeholder:" + requirement.target());
+                }
+            }
+            return missing.isEmpty() ? RequirementCheckResult.success() : RequirementCheckResult.denied(missing);
+        });
+    }
+
+    private boolean permissionAllowed(Player player, QuestRequirement requirement) {
+        if (player == null) {
+            return false;
+        }
+        String permission = requirement.target().isBlank() ? requirement.value() : requirement.target();
+        return !permission.isBlank() && player.hasPermission(permission);
+    }
+
+    private boolean itemAllowed(Player player, QuestRequirement requirement) {
+        if (player == null) {
+            return false;
+        }
+        Material material = Material.matchMaterial(requirement.target());
+        if (material == null) {
+            return false;
+        }
+        int amount = integer(requirement.value(), integer(requirement.data().get("amount"), 1));
+        return player.getInventory().containsAtLeast(new ItemStack(material), Math.max(1, amount));
+    }
+
+    private boolean placeholderAllowed(Player player, QuestRequirement requirement) {
+        if (player == null) {
+            return false;
+        }
+        String placeholder = requirement.target().isBlank() ? requirement.data().getOrDefault("placeholder", "") : requirement.target();
+        String expected = requirement.value().isBlank() ? requirement.data().getOrDefault("equals", "true") : requirement.value();
+        if (placeholder.isBlank()) {
+            return false;
+        }
+        String actual = plugin.services().placeholders().apply(player, placeholder);
+        return actual.equalsIgnoreCase(expected) || ("true".equalsIgnoreCase(expected) && "yes".equalsIgnoreCase(actual));
+    }
+
+    private int integer(String value, int fallback) {
+        if (value == null || value.isBlank()) {
+            return fallback;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException exception) {
+            return fallback;
+        }
     }
 }

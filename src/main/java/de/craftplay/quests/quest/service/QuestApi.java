@@ -9,6 +9,7 @@ import de.craftplay.quests.quest.registry.QuestRegistry;
 import de.craftplay.quests.quest.requirement.RequirementCheckResult;
 import de.craftplay.quests.quest.reward.RewardPlan;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -31,6 +32,10 @@ public interface QuestApi {
 
     CompletableFuture<PlayerQuestData> playerData(UUID playerId);
 
+    CompletableFuture<PlayerQuestData> savePlayerData(PlayerQuestData data);
+
+    CompletableFuture<List<PlayerQuestData>> allPlayerData();
+
     Optional<PlayerQuestData> cachedPlayerData(UUID playerId);
 
     CompletableFuture<ObjectiveProgressResult> recordObjectiveProgress(
@@ -44,7 +49,13 @@ public interface QuestApi {
 
     CompletableFuture<PlayerQuestData> completeQuest(UUID playerId, QuestId questId);
 
+    CompletableFuture<PlayerQuestData> forceCompleteQuest(UUID playerId, QuestId questId);
+
     CompletableFuture<PlayerQuestData> cancelQuest(UUID playerId, QuestId questId);
+
+    CompletableFuture<PlayerQuestData> resetQuest(UUID playerId, QuestId questId);
+
+    CompletableFuture<PlayerQuestData> cleanupExpiredQuests(UUID playerId);
 
     CompletableFuture<PlayerQuestData> trackQuest(UUID playerId, QuestId questId);
 

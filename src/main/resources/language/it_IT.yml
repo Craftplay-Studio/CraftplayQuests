@@ -39,6 +39,11 @@ commands:
   debug-storage: "{prefix} <gray>Storage: <yellow>{storage}</yellow> | Quest: <yellow>{quests}</yellow> | API: <yellow>{api}</yellow></gray>"
   debug-version: "{prefix} <gray>Adapter: <yellow>{adapter}</yellow> | Versione: <yellow>{version}</yellow> | TextDisplay: <yellow>{text_display}</yellow></gray>"
   debug-hook: "{prefix} <gray>Hook <yellow>{hook}</yellow>: <yellow>{enabled}</yellow></gray>"
+  admin-give: "{prefix} <green>Quest <yellow>{quest}</yellow> assegnata a <yellow>{player}</yellow>.</green>"
+  admin-reset: "{prefix} <yellow>Quest <gold>{quest}</gold> reimpostata per <gold>{player}</gold>.</yellow>"
+  admin-complete: "{prefix} <green>Quest <yellow>{quest}</yellow> completata per <yellow>{player}</yellow>.</green>"
+  export-created: "{prefix} <green>Export creato: <yellow>{file}</yellow></green>"
+  npc-list-entry: "{prefix} <gray>NPC <yellow>{npc}</yellow> - {name} | Quest: <yellow>{quests}</yellow></gray>"
   help:
     - "{prefix} <yellow>/quests</yellow> <gray>- apre il menu missioni.</gray>"
     - "{prefix} <yellow>/quests active</yellow> <gray>- mostra le missioni attive.</gray>"
@@ -177,6 +182,7 @@ npc:
   rotation-updated: "{prefix} <green>Rotazione missioni aggiornata.</green>"
 
 dialog:
+  quest-offer: "{prefix} <gold>Quest: <yellow>{quest}</yellow></gold>"
   offer-expired: "{prefix} <red>Questa offerta missione è scaduta.</red>"
   accept-button: "<green>[Accetta]</green>"
   decline-button: "<red>[Rifiuta]</red>"

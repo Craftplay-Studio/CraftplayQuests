@@ -39,6 +39,11 @@ commands:
   debug-storage: "{prefix} <gray>Storage: <yellow>{storage}</yellow> | Görevler: <yellow>{quests}</yellow> | API: <yellow>{api}</yellow></gray>"
   debug-version: "{prefix} <gray>Adapter: <yellow>{adapter}</yellow> | Sürüm: <yellow>{version}</yellow> | TextDisplay: <yellow>{text_display}</yellow></gray>"
   debug-hook: "{prefix} <gray>Hook <yellow>{hook}</yellow>: <yellow>{enabled}</yellow></gray>"
+  admin-give: "{prefix} <green>Görev <yellow>{quest}</yellow>, <yellow>{player}</yellow> oyuncusuna verildi.</green>"
+  admin-reset: "{prefix} <yellow>Görev <gold>{quest}</gold>, <gold>{player}</gold> için sıfırlandı.</yellow>"
+  admin-complete: "{prefix} <green>Görev <yellow>{quest}</yellow>, <yellow>{player}</yellow> için tamamlandı.</green>"
+  export-created: "{prefix} <green>Dışa aktarım oluşturuldu: <yellow>{file}</yellow></green>"
+  npc-list-entry: "{prefix} <gray>NPC <yellow>{npc}</yellow> - {name} | Görevler: <yellow>{quests}</yellow></gray>"
   help:
     - "{prefix} <yellow>/quests</yellow> <gray>- görev menüsünü açar.</gray>"
     - "{prefix} <yellow>/quests active</yellow> <gray>- aktif görevleri gösterir.</gray>"
@@ -177,6 +182,7 @@ npc:
   rotation-updated: "{prefix} <green>Görev rotasyonu güncellendi.</green>"
 
 dialog:
+  quest-offer: "{prefix} <gold>Görev: <yellow>{quest}</yellow></gold>"
   offer-expired: "{prefix} <red>Bu görev teklifi süresi doldu.</red>"
   accept-button: "<green>[Kabul et]</green>"
   decline-button: "<red>[Reddet]</red>"

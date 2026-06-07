@@ -122,6 +122,7 @@ final class QuestDomainTest {
             .addQuestPoints(10)
             .addReputation(3)
             .unlockTitle("Steinbrecher")
+            .withSelectedTitle(Optional.of("Steinbrecher"))
             .unlockAchievement("quest_first");
 
         PlayerQuestData copy = new PlayerQuestDataSerializer().deserialize(
@@ -135,6 +136,7 @@ final class QuestDomainTest {
         assertEquals(10, copy.questPoints());
         assertEquals(3, copy.reputation());
         assertTrue(copy.unlockedTitles().contains("Steinbrecher"));
+        assertEquals(Optional.of("Steinbrecher"), copy.selectedTitle());
         assertTrue(copy.achievements().contains("quest_first"));
         assertEquals(4, copy.progress(questId).orElseThrow().objectiveValue("break_stone"));
     }

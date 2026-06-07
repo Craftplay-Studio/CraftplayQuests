@@ -67,6 +67,9 @@ libraries:
 performance:
   async-workers: 4
   save-interval-seconds: 30
+  dirty-queue:
+    enabled: true
+    flush-interval-seconds: 30
   database-batch-size: 100
   placeholder-check-interval-seconds: 10
   leaderboard-refresh-seconds: 300
@@ -77,6 +80,7 @@ api:
   host: "127.0.0.1"
   port: 8721
   allow-health-without-token: true
+  rate-limit-per-minute: 120
   worker-threads: 2
 
 quest-resets:
@@ -98,6 +102,14 @@ titles:
   hide-while-sneaking: true
   hide-in-vanish: true
   only-show-if-title-selected: true
+
+achievements:
+  advancement-tab:
+    enabled: true
+    title: "Craftplay Quests"
+    background: "minecraft:textures/block/deepslate_tiles.png"
+    icon:
+      material: "minecraft:book"
 
 cache:
   skins:

@@ -39,6 +39,11 @@ commands:
   debug-storage: "{prefix} <gray>Storage: <yellow>{storage}</yellow> | Quests: <yellow>{quests}</yellow> | API: <yellow>{api}</yellow></gray>"
   debug-version: "{prefix} <gray>Adapter: <yellow>{adapter}</yellow> | Version: <yellow>{version}</yellow> | TextDisplay: <yellow>{text_display}</yellow></gray>"
   debug-hook: "{prefix} <gray>Hook <yellow>{hook}</yellow>: <yellow>{enabled}</yellow></gray>"
+  admin-give: "{prefix} <green>Quest <yellow>{quest}</yellow> was given to <yellow>{player}</yellow>.</green>"
+  admin-reset: "{prefix} <yellow>Quest <gold>{quest}</gold> was reset for <gold>{player}</gold>.</yellow>"
+  admin-complete: "{prefix} <green>Quest <yellow>{quest}</yellow> was completed for <yellow>{player}</yellow>.</green>"
+  export-created: "{prefix} <green>Export created: <yellow>{file}</yellow></green>"
+  npc-list-entry: "{prefix} <gray>NPC <yellow>{npc}</yellow> - {name} | Quests: <yellow>{quests}</yellow></gray>"
   help:
     - "{prefix} <yellow>/quests</yellow> <gray>- opens the quest menu.</gray>"
     - "{prefix} <yellow>/quests active</yellow> <gray>- shows active quests.</gray>"
@@ -177,6 +182,7 @@ npc:
   rotation-updated: "{prefix} <green>Quest rotation updated.</green>"
 
 dialog:
+  quest-offer: "{prefix} <gold>Quest: <yellow>{quest}</yellow></gold>"
   offer-expired: "{prefix} <red>This quest offer has expired.</red>"
   accept-button: "<green>[Accept]</green>"
   decline-button: "<red>[Decline]</red>"

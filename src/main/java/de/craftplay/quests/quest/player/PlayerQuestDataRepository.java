@@ -39,6 +39,19 @@ public final class PlayerQuestDataRepository {
             });
     }
 
+    public CompletableFuture<List<PlayerQuestData>> loadAll() {
+        return storageService.listDocuments(PLAYERDATA_NAMESPACE)
+            .thenCompose(keys -> {
+                List<CompletableFuture<PlayerQuestData>> futures = keys.stream()
+                    .map(this::loadSafely)
+                    .toList();
+                return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new))
+                    .thenApply(ignored -> futures.stream()
+                        .map(CompletableFuture::join)
+                        .toList());
+            });
+    }
+
     public CompletableFuture<Void> save(PlayerQuestData data) {
         return storageService.saveDocument(
             new StorageDocumentKey(PLAYERDATA_NAMESPACE, data.playerId().toString()),
@@ -52,6 +65,14 @@ public final class PlayerQuestDataRepository {
 
     public Collection<PlayerQuestData> cachedData() {
         return List.copyOf(cache.values());
+    }
+
+    private CompletableFuture<PlayerQuestData> loadSafely(String key) {
+        try {
+            return load(UUID.fromString(key));
+        } catch (IllegalArgumentException exception) {
+            return CompletableFuture.completedFuture(PlayerQuestData.empty(new UUID(0L, 0L)));
+        }
     }
 
     public void invalidate(UUID playerId) {

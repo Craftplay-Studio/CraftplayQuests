@@ -94,6 +94,8 @@ public final class ServiceRegistry {
 
         plugin.getServer().getPluginManager().registerEvents(new QuestProgressListener(plugin), plugin);
         plugin.getServer().getPluginManager().registerEvents(new GuiListener(plugin), plugin);
+        plugin.getServer().getPluginManager().registerEvents(titleService, plugin);
+        placeholderService.registerExpansion();
 
         libraryLoaderService.prepareConfiguredLibraries()
             .handle((report, throwable) -> {
@@ -109,7 +111,8 @@ public final class ServiceRegistry {
             .thenCompose(ignored -> storageService.initialize())
             .thenCompose(ignored -> questService.initialize())
             .thenCompose(ignored -> npcService.initialize())
-            .thenCompose(ignored -> advancementService.generateAdvancementAssets())
+            .thenCompose(ignored -> advancementService.initialize())
+            .thenRun(titleService::start)
             .thenRun(webApiService::start)
             .whenComplete((ignored, throwable) -> {
                 if (throwable != null) {
@@ -122,8 +125,14 @@ public final class ServiceRegistry {
         if (webApiService != null) {
             webApiService.stop();
         }
+        if (placeholderService != null) {
+            placeholderService.unregisterExpansion();
+        }
         if (redisCacheService != null) {
             redisCacheService.shutdown().join();
+        }
+        if (titleService != null) {
+            titleService.shutdown();
         }
         if (questService != null) {
             questService.shutdown().join();

@@ -83,6 +83,10 @@ api:
   rate-limit-per-minute: 120
   worker-threads: 2
 
+placeholderapi:
+  expansion-enabled: true
+  identifier: "cpquests"
+
 quest-resets:
   daily:
     enabled: true
@@ -99,6 +103,7 @@ titles:
   enabled: true
   update-interval-ticks: 10
   view-distance: 32
+  height-offset: 2.45
   hide-while-sneaking: true
   hide-in-vanish: true
   only-show-if-title-selected: true
@@ -110,6 +115,11 @@ achievements:
     background: "minecraft:textures/block/deepslate_tiles.png"
     icon:
       material: "minecraft:book"
+  quest_first:
+    title: "Der Anfang"
+    description: "Schließe deine erste Quest ab."
+    icon:
+      material: "minecraft:writable_book"
 
 cache:
   skins:

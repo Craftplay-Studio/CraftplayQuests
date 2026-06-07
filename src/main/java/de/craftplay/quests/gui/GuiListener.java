@@ -30,7 +30,7 @@ public final class GuiListener implements Listener {
             return;
         }
 
-        GuiButton button = plugin.services().gui().button(holder.menuId(), event.getRawSlot());
+        GuiButton button = holder.button(event.getRawSlot());
         if (button == null) {
             return;
         }
@@ -64,8 +64,89 @@ public final class GuiListener implements Listener {
             }
             return;
         }
+        if ("OPEN_GUI:admin_quests".equalsIgnoreCase(action)) {
+            if (player.hasPermission(de.craftplay.quests.util.Permissions.ADMIN_QUESTS)) {
+                plugin.services().gui().openAdminQuests(player);
+            }
+            return;
+        }
+        if ("OPEN_GUI:admin_npcs".equalsIgnoreCase(action)) {
+            if (player.hasPermission(de.craftplay.quests.util.Permissions.ADMIN_NPCS)) {
+                plugin.services().gui().openAdminNpcs(player);
+            }
+            return;
+        }
+        if ("OPEN_GUI:admin_categories".equalsIgnoreCase(action)) {
+            if (player.hasPermission(de.craftplay.quests.util.Permissions.ADMIN_CATEGORIES)) {
+                plugin.services().gui().openAdminCategories(player);
+            }
+            return;
+        }
+        if ("OPEN_GUI:admin_titles".equalsIgnoreCase(action)) {
+            if (player.hasPermission(de.craftplay.quests.util.Permissions.ADMIN_TITLES)) {
+                plugin.services().gui().openAdminTitles(player);
+            }
+            return;
+        }
+        if ("OPEN_GUI:admin_settings".equalsIgnoreCase(action)) {
+            if (player.hasPermission(de.craftplay.quests.util.Permissions.ADMIN_RELOAD)) {
+                plugin.services().gui().openAdminSettings(player);
+            }
+            return;
+        }
         if (action.startsWith("OPEN_GUI:player_quests")) {
             plugin.services().gui().openPlayerQuests(player);
+            return;
+        }
+        if (action.startsWith("ADMIN_QUEST_INFO:")) {
+            QuestId questId = QuestId.of(action.substring("ADMIN_QUEST_INFO:".length()));
+            plugin.services().quests().findQuest(questId).ifPresent(quest -> plugin.services().gui().openQuestDetails(player, quest));
+            return;
+        }
+        if (action.startsWith("ADMIN_NPC_INFO:")) {
+            String npcId = action.substring("ADMIN_NPC_INFO:".length());
+            plugin.services().npcs().find(npcId).ifPresent(npc -> plugin.language().send(player, "commands.npc-list-entry", Map.of(
+                "npc", npc.id(),
+                "name", npc.displayName(),
+                "quests", String.valueOf(npc.quests().size())
+            )));
+            return;
+        }
+        if (action.startsWith("ADMIN_GRANT_TITLE:")) {
+            String title = action.substring("ADMIN_GRANT_TITLE:".length());
+            plugin.services().titles().grantTitle(player.getUniqueId(), title)
+                .whenComplete((data, throwable) -> plugin.services().mainThread().execute(() ->
+                    plugin.language().send(player, throwable == null ? "title.unlocked" : "errors.generic", Map.of("title", title))));
+            return;
+        }
+        if ("CREATE_QUEST".equalsIgnoreCase(action)) {
+            if (player.hasPermission(de.craftplay.quests.util.Permissions.ADMIN_QUESTS)) {
+                plugin.services().gui().createTemplateQuest(player);
+            }
+            return;
+        }
+        if ("CREATE_NPC".equalsIgnoreCase(action)) {
+            if (player.hasPermission(de.craftplay.quests.util.Permissions.ADMIN_NPCS)) {
+                plugin.services().gui().createTemplateNpc(player);
+            }
+            return;
+        }
+        if ("CREATE_TITLE".equalsIgnoreCase(action)) {
+            if (player.hasPermission(de.craftplay.quests.util.Permissions.ADMIN_TITLES)) {
+                plugin.services().gui().createAdminTitle(player);
+            }
+            return;
+        }
+        if ("OPEN_IMPORT".equalsIgnoreCase(action)) {
+            plugin.language().send(player, "admin.editor-not-ready");
+            return;
+        }
+        if ("OPEN_CACHE_ADMIN".equalsIgnoreCase(action)) {
+            player.performCommand("quests cache info");
+            return;
+        }
+        if ("OPEN_SYSTEM_ADMIN".equalsIgnoreCase(action)) {
+            player.performCommand("quests debug services");
             return;
         }
         if (action.startsWith("ACCEPT_QUEST:")) {
@@ -79,6 +160,7 @@ public final class GuiListener implements Listener {
                     plugin.language().send(player, "quest.accepted", Map.of("quest", questId.value()));
                     player.closeInventory();
                 }));
+            return;
         }
         if (action.startsWith("CANCEL_QUEST:") || action.startsWith("DECLINE_QUEST:")) {
             QuestId questId = QuestId.of(action.substring(action.indexOf(':') + 1));

@@ -37,18 +37,29 @@ public final class ServerSettingsService {
     }
 
     public boolean hasApiToken(String token) {
+        return hasApiToken(token, new String[0]);
+    }
+
+    public boolean hasApiToken(String token, String... allowedNames) {
+        return apiTokenName(token)
+            .filter(name -> allowedNames == null || allowedNames.length == 0 || java.util.Arrays.stream(allowedNames)
+                .anyMatch(allowed -> allowed.equalsIgnoreCase(name)))
+            .isPresent();
+    }
+
+    public Optional<String> apiTokenName(String token) {
         if (token == null || token.isBlank()) {
-            return false;
+            return Optional.empty();
         }
         ConfigurationSection section = serverConfiguration.getConfigurationSection("api.tokens");
         if (section == null) {
-            return false;
+            return Optional.empty();
         }
         for (String key : section.getKeys(false)) {
             if (token.equals(section.getString(key))) {
-                return true;
+                return Optional.of(key);
             }
         }
-        return false;
+        return Optional.empty();
     }
 }

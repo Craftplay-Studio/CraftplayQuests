@@ -18,6 +18,16 @@ Aktueller Stand: Phase 1 bis Phase 9 sind als startfähiger Plugin-MVP umgesetzt
 - Erste frei konfigurierbare GUI-YAML-Dateien
 - MIT-Lizenz aus dem GitHub-Repository übernommen
 
+## Aktueller Ausbau
+
+Der aktuelle Stand ergänzt die zuvor offenen Integrationen für Titel, Advancements, Admin-GUI, PlaceholderAPI und API:
+
+- Titelsystem mit auswählbaren freigeschalteten Titeln, laufendem TextDisplay über Spielern, View-Distance, Sneak-/Vanish-Ausblendung und sauberem Lifecycle beim Weltwechsel, Logout und Shutdown
+- Advancement-System mit Datapack-Asset-Generierung, Bukkit-Load zur Laufzeit, Achievement-Awarding beim Freischalten und API-Registrierung zusätzlicher Advancement-Definitionen
+- PlaceholderAPI-Integration als echte `%cpquests_*%`-Expansion mit `completed`, `active`, `points`, `reputation`, `achievements`, `titles`, `title`, `tracked`, `server`, `storage`, `quests_total` und `api_running`
+- Admin-GUI mit isolierten Inventar-Aktionen pro geöffnetem Menü, Questliste, Questdetails, NPC-Liste, Titelübersicht, Titelvergabe sowie Basis-Erstellung von Quest-, NPC- und Titel-Datensätzen
+- HTTP-API mit getrennten Token-Zwecken für `panel` und `homepage`, PlayerData-Endpunkten, Titel- und Achievement-Verwaltung, Advancement-Snapshot, Hook-Snapshot, Storage-Flush und Reload-Endpunkt
+
 ## Komplett Nachgezogene Restplanung
 
 Der zweite Ausbau hat die offenen Planpunkte aus Phase 9 und Phase 10 in den Kern integriert:
@@ -115,13 +125,17 @@ Die Questlogik wurde erweitert:
 
 ## Phase 5
 
-Das Spieler-GUI-System ist vorhanden:
+Das Spieler- und Admin-GUI-System ist vorhanden:
 
 - `GuiService` lädt Inventar-Menüs aus `gui/*.yml`
 - `/quests` öffnet für Spieler das Hauptmenü
 - Inventarklicks werden über `GuiListener` verarbeitet
 - Questliste und Quest-Annahme sind über GUI-Aktionen angebunden
 - GUI-Aktionen für Back, Close, Admin, Abenteuerbuch, Achievements, Track, Cancel, Player-Command, Console-Command, Message und Sound
+- Admin-Menüs öffnen Quest-, NPC-, Kategorien-, Titel- und Einstellungsbereiche
+- Questdetails werden aus der Admin-Questliste heraus geöffnet und Spieleraktionen werden mit Quest-ID ausgeführt
+- Admin-GUI-Aktionen können Template-Quests, Template-NPCs und Admin-Titel erzeugen
+- GUI-Klickaktionen werden pro geöffnetem Inventar gespeichert, damit parallele Admin-Sessions nicht kollidieren
 - Bedrock-Erkennung über Floodgate ist vorbereitet, Chest-GUI kann später durch Forms ersetzt werden
 
 ## Phase 6
@@ -131,19 +145,24 @@ Die Integrations- und Versionsbasis ist vorhanden:
 - Hook-Erkennung für Citizens, PlaceholderAPI, CMI, Jobs, HeadDatabase, Floodgate, LuckPerms und Vault
 - Interne Placeholder-Ersetzung für aktive, abgeschlossene und verfolgte Questdaten
 - PlaceholderAPI-Auswertung über Reflection, wenn PlaceholderAPI vorhanden ist
+- Eigene PlaceholderAPI-Expansion `cpquests` mit Spieler-, Server-, Storage- und API-Placeholdern
 - VersionAdapter-Erkennung für 1.21.x, 1.21.6+ und zukünftige 26.1.x-Familien
 - Services für Daily-/Weekly-Reset-Cleanup beim Login, NPC-Verknüpfungen, Dialog-Angebote und Titelstatus
 - Spieler können freigeschaltete Titel mit `/quests title <titel>` auswählen und mit `/quests title clear` entfernen
+- Freigeschaltete Titel werden als TextDisplay über Spielern dargestellt, sofern die Serverversion TextDisplays unterstützt
 
 ## Phase 7
 
 API-, Import- und externe Verwaltungsgrundlagen sind vorhanden:
 
-- Lokale HTTP-API unter `/api/health`, `/api/stats/overview`, `/api/stats/top-players`, `/api/stats/player/{uuid}`, `/api/admin/quests`, `/api/admin/npcs`, `/api/admin/import`, `/api/admin/cache` und `/api/admin/export`
-- API ist standardmäßig deaktiviert und nutzt die Tokens aus `server.yml`
+- Lokale HTTP-API unter `/api/health`, `/api/stats/overview`, `/api/stats/top-players`, `/api/stats/player/{uuid}`, `/api/admin/quests`, `/api/admin/npcs`, `/api/admin/playerdata`, `/api/admin/titles`, `/api/admin/achievements`, `/api/admin/advancements`, `/api/admin/hooks`, `/api/admin/import`, `/api/admin/cache`, `/api/admin/export`, `/api/admin/storage/flush` und `/api/admin/reload`
+- API ist standardmäßig deaktiviert und nutzt die Tokens aus `server.yml`; `homepage` darf Statistik-Endpunkte lesen, `panel` darf Admin-Endpunkte nutzen
 - Konfiguration unter `api.enabled`, `api.host`, `api.port`, `api.rate-limit-per-minute` und `api.worker-threads`
 - Quest-CRUD ist über YAML-Body und Token-Schutz angebunden
-- NPC-List/Create/Delete ist über die API angebunden
+- NPC-List/Create/Delete sowie Link-, Skin- und Quest-Zuordnungsupdates sind über die API angebunden
+- PlayerData kann über die API gelesen, gespeichert und zurückgesetzt werden
+- Titel und Achievements können über die API vergeben, ausgewählt und aggregiert ausgelesen werden
+- Advancement-Definitionen können über die API registriert und als Laufzeit-Snapshot ausgelesen werden
 - Import-Service erzeugt Backup und Report für QuestsPlugin-Importläufe
 - Server-ID, Storage, Hooks, Version, Questliste, Spielerstatistiken, Cache und Exports sind über die API auslesbar
 
@@ -196,12 +215,14 @@ Der Plugin-Kern ist jetzt gebaut. Vor einem produktiven Release fehlen vor allem
 
 - Start auf Paper/Purpur mit Java 21
 - Questannahme, Fortschritt, Abschluss, Speicherung und GUI-Klicks im Spiel
+- Admin-GUI-Flows für Questdetails, NPC-Liste, Titelvergabe und Template-Erstellung
+- Titel-TextDisplays im echten Mehrspielerbetrieb inklusive Sneak, Vanish, Weltwechsel und Logout
 - H2-, YAML-, MySQL- und MariaDB-Fallbacks mit echten Plugin-Datenordnern
 - Redis mit echtem Redis-Server
-- Optionale Hook-Tests mit PlaceholderAPI, Citizens, Floodgate, LuckPerms, Vault und HeadDatabase
+- Optionale Hook-Tests mit PlaceholderAPI-Expansion, Citizens, Floodgate, LuckPerms, Vault und HeadDatabase
 - HTTP-API mit echten `server.yml`-Tokens
 - Import von realen QuestsPlugin-Dateien
-- Datapack-/Advancement-Dateien im Serverbetrieb
+- Datapack-/Advancement-Dateien und Runtime-Awards im Serverbetrieb
 
 ## Entwicklungsregeln
 

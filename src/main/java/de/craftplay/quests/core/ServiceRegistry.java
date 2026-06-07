@@ -2,6 +2,7 @@ package de.craftplay.quests.core;
 
 import de.craftplay.quests.CraftplayQuestsPlugin;
 import de.craftplay.quests.library.LibraryLoaderService;
+import de.craftplay.quests.quest.service.QuestService;
 import de.craftplay.quests.scheduler.AsyncTaskService;
 import de.craftplay.quests.scheduler.MainThreadService;
 import de.craftplay.quests.storage.StorageService;
@@ -14,6 +15,7 @@ public final class ServiceRegistry {
     private AsyncTaskService asyncTaskService;
     private LibraryLoaderService libraryLoaderService;
     private StorageService storageService;
+    private QuestService questService;
 
     public ServiceRegistry(CraftplayQuestsPlugin plugin) {
         this.plugin = plugin;
@@ -25,17 +27,28 @@ public final class ServiceRegistry {
         this.asyncTaskService = new AsyncTaskService(plugin, mainThreadService, workers);
         this.libraryLoaderService = new LibraryLoaderService(plugin, asyncTaskService);
         this.storageService = new StorageService(plugin, asyncTaskService, libraryLoaderService);
+        this.questService = new QuestService(plugin, storageService);
 
         libraryLoaderService.prepareConfiguredLibraries()
-            .whenComplete((report, throwable) -> {
+            .handle((report, throwable) -> {
                 if (throwable != null) {
                     plugin.getLogger().warning("Library preparation failed: " + throwable.getMessage());
                 }
-                storageService.initialize();
+                return null;
+            })
+            .thenCompose(ignored -> storageService.initialize())
+            .thenCompose(ignored -> questService.initialize())
+            .whenComplete((ignored, throwable) -> {
+                if (throwable != null) {
+                    plugin.getLogger().warning("Quest services failed to initialize: " + throwable.getMessage());
+                }
             });
     }
 
     public void shutdown() {
+        if (questService != null) {
+            questService.shutdown().join();
+        }
         if (storageService != null) {
             storageService.shutdown().join();
         }
@@ -58,5 +71,9 @@ public final class ServiceRegistry {
 
     public StorageService storage() {
         return storageService;
+    }
+
+    public QuestService quests() {
+        return questService;
     }
 }

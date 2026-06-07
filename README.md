@@ -4,7 +4,7 @@ CraftplayQuests ist ein modulares Quest-, RPG-, NPC-, Achievement- und Statistik
 
 ## Projektstatus
 
-Aktueller Stand: Phase 1, Phase 2A und Phase 2B sind als technische Grundlage umgesetzt.
+Aktueller Stand: Phase 1, Phase 2A, Phase 2B, Phase 3A und Phase 3B sind als technische Grundlage umgesetzt.
 
 - Maven-Projekt mit Java 21
 - Paper-API als bereitgestellte Compile-Abhängigkeit
@@ -41,6 +41,31 @@ Die Storage- und Library-Grundstruktur ist vorhanden:
 - Konfigurierbare Maven-Koordinaten für MySQL, MariaDB, H2 und Redis/Jedis
 - Automatischer Download fehlender Libraries, wenn `libraries.auto-download` aktiviert ist
 
+## Phase 3A
+
+Das Quest-Domain-Modell ist vorhanden:
+
+- `Quest`, `QuestId`, `QuestMetadata` und `QuestCategory`
+- `QuestType`, `QuestDifficulty` und `QuestStatus`
+- `QuestObjective` mit `ObjectiveType`
+- `QuestRequirement` mit `RequirementType`
+- `QuestReward` mit `RewardType`
+- Grundvalidierung für Quest-IDs, Kategorien, Spieleranzahl, Ziele, Voraussetzungen und Belohnungen
+- Bukkit-freie Modelle, damit VersionAdapter und Hooks später sauber andocken können
+
+## Phase 3B
+
+Die Quest-Datenbasis und Service-Fassade sind vorhanden:
+
+- `QuestApi` als gemeinsame Fassade für spätere Commands, GUIs und externe APIs
+- `QuestService` mit Registry- und PlayerData-Zugriff
+- `QuestRegistry` zum Laden, Speichern, Löschen und Auflisten von Quest-Dokumenten
+- `QuestSerializer` für YAML-Dokumente
+- `PlayerQuestData` und `PlayerQuestProgress`
+- `PlayerQuestDataRepository` mit Cache und Storage-Anbindung
+- `PlayerQuestDataSerializer` für aktive, abgeschlossene und verfolgte Quests
+- Basisoperationen für Quest annehmen, abschließen, abbrechen, verfolgen und nicht mehr verfolgen
+
 ## Build
 
 ```powershell
@@ -60,8 +85,9 @@ Das fertige Plugin-JAR wird unter `target/CraftplayQuests-0.1.0-SNAPSHOT.jar` er
 
 Diese Systeme sind noch nicht implementiert und werden später phasenweise ergänzt:
 
-- Echte Questlogik, Quest-Modell, Quest-Registry, Quest-API und Quest-Data
-- Ziele, Voraussetzungen und Belohnungen mit Laufzeitlogik
+- Echte Gameplay-Fortschritte über Bukkit-/Paper-Events
+- Vollständige Requirement-Auswertung über Hooks, Items, Permissions, Jobs, Placeholder und Fraktionen
+- Vollständige Reward-Ausgabe mit Items, Geld, Commands, Permissions, Titeln und Achievements
 - MySQL-/MariaDB-StorageProvider und Redis-CacheProvider als produktive Provider
 - DirtyQueue, Batch-Saves und Storage-Migrationen
 - Laufendes GUI-System mit Inventaröffnung und Klickverarbeitung
@@ -94,11 +120,10 @@ Diese Systeme sind noch nicht implementiert und werden später phasenweise ergä
 
 ## Nächste Phase
 
-Phase 3 soll das eigentliche Quest-Fundament ergänzen:
+Phase 4 soll die erste echte Laufzeitlogik ergänzen:
 
-- Quest-Modell
-- QuestRegistry
-- PlayerQuestData
-- Objective-System
-- Requirement-System
-- Reward-System
+- Objective-Service-Grundstruktur
+- Requirement-Service-Grundstruktur
+- Reward-Service-Grundstruktur
+- Erste interne Validierung beim Annehmen und Abschließen von Quests
+- Vorbereitung für Bukkit-Event-Listener ohne vollwertige Gameplay-Hooks

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public final class StorageService {
@@ -54,6 +55,10 @@ public final class StorageService {
 
     public CompletableFuture<Optional<String>> loadDocument(StorageDocumentKey key) {
         return provider().loadDocument(key);
+    }
+
+    public CompletableFuture<Set<String>> listDocuments(String namespace) {
+        return provider().listDocuments(namespace);
     }
 
     public CompletableFuture<Void> saveDocument(StorageDocumentKey key, String content) {

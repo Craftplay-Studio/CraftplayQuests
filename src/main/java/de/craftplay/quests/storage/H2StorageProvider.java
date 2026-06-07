@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.concurrent.CompletableFuture;
 
 public final class H2StorageProvider implements StorageProvider {
@@ -81,6 +83,27 @@ public final class H2StorageProvider implements StorageProvider {
                 }
             } catch (SQLException exception) {
                 throw new IllegalStateException("Could not load H2 document " + key, exception);
+            }
+        });
+    }
+
+    @Override
+    public CompletableFuture<Set<String>> listDocuments(String namespace) {
+        return asyncTaskService.supplyAsync(() -> {
+            try (Connection connection = connection();
+                 PreparedStatement statement = connection.prepareStatement("""
+                     SELECT doc_key FROM cpq_documents WHERE namespace = ?
+                     """)) {
+                statement.setString(1, new StorageDocumentKey(namespace, "validation").namespace());
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    java.util.ArrayList<String> keys = new java.util.ArrayList<>();
+                    while (resultSet.next()) {
+                        keys.add(resultSet.getString("doc_key"));
+                    }
+                    return keys.stream().collect(Collectors.toUnmodifiableSet());
+                }
+            } catch (SQLException exception) {
+                throw new IllegalStateException("Could not list H2 namespace " + namespace, exception);
             }
         });
     }

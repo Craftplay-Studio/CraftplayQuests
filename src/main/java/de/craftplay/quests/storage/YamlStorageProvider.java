@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.concurrent.CompletableFuture;
 
 public final class YamlStorageProvider implements StorageProvider {
@@ -66,6 +68,27 @@ public final class YamlStorageProvider implements StorageProvider {
                 return Optional.of(Files.readString(path, StandardCharsets.UTF_8));
             } catch (IOException exception) {
                 throw new IllegalStateException("Could not load YAML document " + key, exception);
+            }
+        });
+    }
+
+    @Override
+    public CompletableFuture<Set<String>> listDocuments(String namespace) {
+        return asyncTaskService.supplyAsync(() -> {
+            Path folder = rootFolder().resolve(new StorageDocumentKey(namespace, "validation").namespace()).normalize();
+            if (Files.notExists(folder)) {
+                return Set.of();
+            }
+
+            try (var stream = Files.list(folder)) {
+                return stream
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.getFileName().toString().endsWith(".yml"))
+                    .map(path -> path.getFileName().toString())
+                    .map(fileName -> fileName.substring(0, fileName.length() - 4))
+                    .collect(Collectors.toUnmodifiableSet());
+            } catch (IOException exception) {
+                throw new IllegalStateException("Could not list YAML namespace " + namespace, exception);
             }
         });
     }

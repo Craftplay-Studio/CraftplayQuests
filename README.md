@@ -42,6 +42,7 @@ Das fertige Plugin-JAR wird unter `target/CraftplayQuests-0.1.0-SNAPSHOT.jar` er
 - Lokale Daten liegen unter `save/`
 - Umlaute werden in Plugin-Ressourcen und README als UTF-8 gepflegt
 - `.editorconfig` erzwingt UTF-8 als Projektstandard
+- `.gitattributes` hält UTF-8-Dateien und LF-Zeilenenden im Repository stabil
 
 ## Nächste Phase
 

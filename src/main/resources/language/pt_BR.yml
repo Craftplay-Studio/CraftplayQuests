@@ -32,6 +32,13 @@ commands:
   reload: "{prefix} <green>Configuração, idioma e dados do servidor recarregados.</green>"
   version: "{prefix} <gray>Versão:</gray> <yellow>{version}</yellow> <dark_gray>|</dark_gray> <gray>ID do servidor:</gray> <yellow>{server_id}</yellow>"
   usage: "{prefix} <red>Uso: <yellow>{usage}</yellow></red>"
+  quest-list-header: "{prefix} <gray>Quests carregadas: <yellow>{count}</yellow></gray>"
+  quest-list-entry: "{prefix} <yellow>{quest}</yellow> <gray>- {name} | Tipo: <gold>{type}</gold> | Ativa: <gold>{enabled}</gold></gray>"
+  quest-info: "{prefix} <yellow>{quest}</yellow> <gray>- {name} | Categoria: <gold>{category}</gold> | Tipo: <gold>{type}</gold> | Dificuldade: <gold>{difficulty}</gold> | Objetivos: <gold>{objectives}</gold> | Requisitos: <gold>{requirements}</gold> | Recompensas: <gold>{rewards}</gold> | Ativa: <gold>{enabled}</gold></gray>"
+  player-progress: "{prefix} <gray>{player}: Ativas <yellow>{active}</yellow>, Concluídas <yellow>{completed}</yellow>, Pontos <yellow>{points}</yellow>, Reputação <yellow>{reputation}</yellow>, Conquistas <yellow>{achievements}</yellow>, Título <yellow>{title}</yellow></gray>"
+  debug-storage: "{prefix} <gray>Storage: <yellow>{storage}</yellow> | Quests: <yellow>{quests}</yellow> | API: <yellow>{api}</yellow></gray>"
+  debug-version: "{prefix} <gray>Adapter: <yellow>{adapter}</yellow> | Versão: <yellow>{version}</yellow> | TextDisplay: <yellow>{text_display}</yellow></gray>"
+  debug-hook: "{prefix} <gray>Hook <yellow>{hook}</yellow>: <yellow>{enabled}</yellow></gray>"
   help:
     - "{prefix} <yellow>/quests</yellow> <gray>- abre o menu de quests.</gray>"
     - "{prefix} <yellow>/quests active</yellow> <gray>- mostra quests ativas.</gray>"
@@ -245,6 +252,7 @@ api:
   audit-created: "Entrada de auditoria criada"
 
 import:
+  report-created: "{prefix} <green>Relatório de importação criado: <yellow>{file}</yellow></green>"
   started: "{prefix} <yellow>Importação iniciada: <gold>{importer}</gold></yellow>"
   backup-created: "{prefix} <green>Backup criado: <yellow>{file}</yellow></green>"
   finished: "{prefix} <green>Importação concluída. Sucesso: <yellow>{success}</yellow>, ignoradas: <yellow>{skipped}</yellow>.</green>"

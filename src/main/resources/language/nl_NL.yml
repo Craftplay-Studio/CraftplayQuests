@@ -32,6 +32,13 @@ commands:
   reload: "{prefix} <green>Configuratie, taal en servergegevens zijn herladen.</green>"
   version: "{prefix} <gray>Versie:</gray> <yellow>{version}</yellow> <dark_gray>|</dark_gray> <gray>Server-ID:</gray> <yellow>{server_id}</yellow>"
   usage: "{prefix} <red>Gebruik: <yellow>{usage}</yellow></red>"
+  quest-list-header: "{prefix} <gray>Geladen quests: <yellow>{count}</yellow></gray>"
+  quest-list-entry: "{prefix} <yellow>{quest}</yellow> <gray>- {name} | Type: <gold>{type}</gold> | Actief: <gold>{enabled}</gold></gray>"
+  quest-info: "{prefix} <yellow>{quest}</yellow> <gray>- {name} | Categorie: <gold>{category}</gold> | Type: <gold>{type}</gold> | Moeilijkheid: <gold>{difficulty}</gold> | Doelen: <gold>{objectives}</gold> | Vereisten: <gold>{requirements}</gold> | Beloningen: <gold>{rewards}</gold> | Actief: <gold>{enabled}</gold></gray>"
+  player-progress: "{prefix} <gray>{player}: Actief <yellow>{active}</yellow>, Voltooid <yellow>{completed}</yellow>, Punten <yellow>{points}</yellow>, Reputatie <yellow>{reputation}</yellow>, Achievements <yellow>{achievements}</yellow>, Titel <yellow>{title}</yellow></gray>"
+  debug-storage: "{prefix} <gray>Storage: <yellow>{storage}</yellow> | Quests: <yellow>{quests}</yellow> | API: <yellow>{api}</yellow></gray>"
+  debug-version: "{prefix} <gray>Adapter: <yellow>{adapter}</yellow> | Versie: <yellow>{version}</yellow> | TextDisplay: <yellow>{text_display}</yellow></gray>"
+  debug-hook: "{prefix} <gray>Hook <yellow>{hook}</yellow>: <yellow>{enabled}</yellow></gray>"
   help:
     - "{prefix} <yellow>/quests</yellow> <gray>- opent het quest-menu.</gray>"
     - "{prefix} <yellow>/quests active</yellow> <gray>- toont actieve quests.</gray>"
@@ -245,6 +252,7 @@ api:
   audit-created: "Audit-item aangemaakt"
 
 import:
+  report-created: "{prefix} <green>Importrapport gemaakt: <yellow>{file}</yellow></green>"
   started: "{prefix} <yellow>Import gestart: <gold>{importer}</gold></yellow>"
   backup-created: "{prefix} <green>Backup aangemaakt: <yellow>{file}</yellow></green>"
   finished: "{prefix} <green>Import voltooid. Succes: <yellow>{success}</yellow>, overgeslagen: <yellow>{skipped}</yellow>.</green>"

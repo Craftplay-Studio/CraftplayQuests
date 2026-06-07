@@ -6,6 +6,7 @@ import de.craftplay.quests.quest.player.PlayerQuestProgress;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,7 +18,11 @@ public final class PlayerQuestDataSerializer {
         YamlConfiguration configuration = new YamlConfiguration();
         configuration.set("player-id", data.playerId().toString());
         configuration.set("updated-at", data.updatedAt());
+        configuration.set("quest-points", data.questPoints());
+        configuration.set("reputation", data.reputation());
         configuration.set("completed", data.completedQuests().stream().map(QuestId::value).sorted().toList());
+        configuration.set("titles", data.unlockedTitles().stream().sorted().toList());
+        configuration.set("achievements", data.achievements().stream().sorted().toList());
         data.trackedQuest().ifPresent(questId -> configuration.set("tracked", questId.value()));
 
         for (PlayerQuestProgress progress : data.activeQuests().values()) {
@@ -61,6 +66,10 @@ public final class PlayerQuestDataSerializer {
             active,
             configuration.getStringList("completed").stream().map(QuestId::of).collect(Collectors.toUnmodifiableSet()),
             tracked,
+            configuration.getInt("quest-points", 0),
+            configuration.getInt("reputation", 0),
+            Set.copyOf(configuration.getStringList("titles")),
+            Set.copyOf(configuration.getStringList("achievements")),
             configuration.getLong("updated-at", System.currentTimeMillis())
         );
     }

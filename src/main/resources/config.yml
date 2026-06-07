@@ -72,6 +72,13 @@ performance:
   leaderboard-refresh-seconds: 300
   api-cache-refresh-seconds: 300
 
+api:
+  enabled: false
+  host: "127.0.0.1"
+  port: 8721
+  allow-health-without-token: true
+  worker-threads: 2
+
 quest-resets:
   daily:
     enabled: true

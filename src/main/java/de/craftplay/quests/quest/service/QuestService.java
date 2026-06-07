@@ -1,6 +1,7 @@
 package de.craftplay.quests.quest.service;
 
 import de.craftplay.quests.CraftplayQuestsPlugin;
+import de.craftplay.quests.achievement.AchievementService;
 import de.craftplay.quests.quest.model.ObjectiveType;
 import de.craftplay.quests.quest.model.Quest;
 import de.craftplay.quests.quest.model.QuestId;
@@ -15,6 +16,7 @@ import de.craftplay.quests.quest.reward.RewardPlan;
 import de.craftplay.quests.quest.reward.RewardService;
 import de.craftplay.quests.quest.seed.QuestSeedService;
 import de.craftplay.quests.storage.StorageService;
+import de.craftplay.quests.scheduler.MainThreadService;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,14 +29,21 @@ public final class QuestService implements QuestApi {
     private final ObjectiveService objectiveService;
     private final RequirementService requirementService;
     private final RewardService rewardService;
+    private final AchievementService achievementService;
     private final QuestSeedService questSeedService;
 
-    public QuestService(CraftplayQuestsPlugin plugin, StorageService storageService) {
+    public QuestService(
+        CraftplayQuestsPlugin plugin,
+        StorageService storageService,
+        MainThreadService mainThreadService,
+        AchievementService achievementService
+    ) {
         this.questRegistry = new QuestRegistry(plugin, storageService);
         this.playerQuestDataRepository = new PlayerQuestDataRepository(storageService);
         this.objectiveService = new ObjectiveService();
         this.requirementService = new RequirementService();
-        this.rewardService = new RewardService();
+        this.rewardService = new RewardService(plugin, mainThreadService);
+        this.achievementService = achievementService;
         this.questSeedService = new QuestSeedService();
     }
 
@@ -91,6 +100,11 @@ public final class QuestService implements QuestApi {
     }
 
     @Override
+    public Optional<PlayerQuestData> cachedPlayerData(UUID playerId) {
+        return playerQuestDataRepository.cached(playerId);
+    }
+
+    @Override
     public CompletableFuture<ObjectiveProgressResult> recordObjectiveProgress(
         UUID playerId,
         ObjectiveType type,
@@ -143,8 +157,14 @@ public final class QuestService implements QuestApi {
                 throw new IllegalStateException("Quest objectives are not complete: " + questId.value());
             }
 
-            PlayerQuestData updated = data.withCompletedQuest(questId);
-            rewardService.planRewards(quest);
+            boolean firstCompletedQuest = data.completedQuests().isEmpty();
+            PlayerQuestData completed = data.withCompletedQuest(questId);
+            PlayerQuestData withAchievements = achievementService.applyQuestCompletionAchievements(
+                completed,
+                questId,
+                firstCompletedQuest
+            );
+            PlayerQuestData updated = rewardService.applyRewards(withAchievements, quest);
             return playerQuestDataRepository.save(updated).thenApply(ignored -> updated);
         });
     }

@@ -32,6 +32,13 @@ commands:
   reload: "{prefix} <green>Yapılandırma, dil ve sunucu verileri yenilendi.</green>"
   version: "{prefix} <gray>Sürüm:</gray> <yellow>{version}</yellow> <dark_gray>|</dark_gray> <gray>Sunucu ID:</gray> <yellow>{server_id}</yellow>"
   usage: "{prefix} <red>Kullanım: <yellow>{usage}</yellow></red>"
+  quest-list-header: "{prefix} <gray>Yüklenen görevler: <yellow>{count}</yellow></gray>"
+  quest-list-entry: "{prefix} <yellow>{quest}</yellow> <gray>- {name} | Tür: <gold>{type}</gold> | Aktif: <gold>{enabled}</gold></gray>"
+  quest-info: "{prefix} <yellow>{quest}</yellow> <gray>- {name} | Kategori: <gold>{category}</gold> | Tür: <gold>{type}</gold> | Zorluk: <gold>{difficulty}</gold> | Hedefler: <gold>{objectives}</gold> | Gereksinimler: <gold>{requirements}</gold> | Ödüller: <gold>{rewards}</gold> | Aktif: <gold>{enabled}</gold></gray>"
+  player-progress: "{prefix} <gray>{player}: Aktif <yellow>{active}</yellow>, Tamamlanan <yellow>{completed}</yellow>, Puan <yellow>{points}</yellow>, İtibar <yellow>{reputation}</yellow>, Başarılar <yellow>{achievements}</yellow>, Unvan <yellow>{title}</yellow></gray>"
+  debug-storage: "{prefix} <gray>Storage: <yellow>{storage}</yellow> | Görevler: <yellow>{quests}</yellow> | API: <yellow>{api}</yellow></gray>"
+  debug-version: "{prefix} <gray>Adapter: <yellow>{adapter}</yellow> | Sürüm: <yellow>{version}</yellow> | TextDisplay: <yellow>{text_display}</yellow></gray>"
+  debug-hook: "{prefix} <gray>Hook <yellow>{hook}</yellow>: <yellow>{enabled}</yellow></gray>"
   help:
     - "{prefix} <yellow>/quests</yellow> <gray>- görev menüsünü açar.</gray>"
     - "{prefix} <yellow>/quests active</yellow> <gray>- aktif görevleri gösterir.</gray>"
@@ -245,6 +252,7 @@ api:
   audit-created: "Audit kaydı oluşturuldu"
 
 import:
+  report-created: "{prefix} <green>İçe aktarma raporu oluşturuldu: <yellow>{file}</yellow></green>"
   started: "{prefix} <yellow>Import başladı: <gold>{importer}</gold></yellow>"
   backup-created: "{prefix} <green>Backup oluşturuldu: <yellow>{file}</yellow></green>"
   finished: "{prefix} <green>Import bitti. Başarılı: <yellow>{success}</yellow>, atlandı: <yellow>{skipped}</yellow>.</green>"

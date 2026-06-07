@@ -52,6 +52,47 @@ public final class RequirementService {
             return Optional.empty();
         }
 
+        if (requirement.type() == RequirementType.REPUTATION) {
+            int requiredReputation = integer(requirement.value().isBlank() ? requirement.target() : requirement.value(), 0);
+            if (data.reputation() < requiredReputation) {
+                return Optional.of("reputation:" + requiredReputation);
+            }
+            return Optional.empty();
+        }
+
+        if (requirement.type() == RequirementType.TITLE) {
+            String title = requirement.target().isBlank() ? requirement.value() : requirement.target();
+            if (title.isBlank()) {
+                return Optional.of("requirement-invalid:" + requirement.id());
+            }
+            if (!data.unlockedTitles().contains(title)) {
+                return Optional.of("title:" + title);
+            }
+            return Optional.empty();
+        }
+
+        if (requirement.type() == RequirementType.ACHIEVEMENT) {
+            String achievement = requirement.target().isBlank() ? requirement.value() : requirement.target();
+            if (achievement.isBlank()) {
+                return Optional.of("requirement-invalid:" + requirement.id());
+            }
+            if (!data.achievements().contains(achievement)) {
+                return Optional.of("achievement:" + achievement);
+            }
+            return Optional.empty();
+        }
+
         return Optional.of("requirement-not-implemented:" + requirement.type().name());
+    }
+
+    private int integer(String value, int fallback) {
+        if (value == null || value.isBlank()) {
+            return fallback;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException exception) {
+            return fallback;
+        }
     }
 }

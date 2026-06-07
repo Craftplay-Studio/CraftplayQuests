@@ -4,7 +4,7 @@ CraftplayQuests ist ein modulares Quest-, RPG-, NPC-, Achievement- und Statistik
 
 ## Projektstatus
 
-Aktueller Stand: Phase 1 bis Phase 4A sind umgesetzt. Zusätzlich wurden die nächsten fünf Ausbauschritte direkt mitgezogen.
+Aktueller Stand: Phase 1 bis Phase 9 sind als startfähiger Plugin-MVP umgesetzt. Der Kern ist gebaut und muss jetzt auf einem Paper-/Purpur-Testserver mit den optionalen Hook-Plugins geprüft werden.
 
 - Maven-Projekt mit Java 21
 - Paper-API als bereitgestellte Compile-Abhängigkeit
@@ -81,6 +81,67 @@ Zusätzlich zu Phase 4A sind fünf nächste Schritte bereits umgesetzt:
 - Spielerbefehle für `/quests accept`, `/quests complete`, `/quests cancel`, `/quests track` und `/quests untrack`
 - Automatischer Beispielquest-Seed `miner_story_01`, falls noch keine Quests existieren
 
+## Phase 4B und 4C
+
+Die Questlogik wurde erweitert:
+
+- Interne Requirements für abgeschlossene Vorquests, Ruf, Titel und Achievements
+- Belohnungen für Questpunkte, Ruf, Titel, Achievements und Konsolenbefehle
+- Item-Rewards über Bukkit-Materialien
+- Vault-Geldbelohnungen über optionale Reflection, wenn Vault vorhanden ist
+- LuckPerms-Permissions über Konsolenkommando-Fallback, wenn LuckPerms vorhanden ist
+- Achievement-Freischaltung beim Questabschluss inklusive erstem Questabschluss
+
+## Phase 5
+
+Das Spieler-GUI-System ist vorhanden:
+
+- `GuiService` lädt Inventar-Menüs aus `gui/*.yml`
+- `/quests` öffnet für Spieler das Hauptmenü
+- Inventarklicks werden über `GuiListener` verarbeitet
+- Questliste und Quest-Annahme sind über GUI-Aktionen angebunden
+- Bedrock-Erkennung über Floodgate ist vorbereitet, Chest-GUI kann später durch Forms ersetzt werden
+
+## Phase 6
+
+Die Integrations- und Versionsbasis ist vorhanden:
+
+- Hook-Erkennung für Citizens, PlaceholderAPI, CMI, Jobs, HeadDatabase, Floodgate, LuckPerms und Vault
+- Interne Placeholder-Ersetzung für aktive, abgeschlossene und verfolgte Questdaten
+- PlaceholderAPI-Auswertung über Reflection, wenn PlaceholderAPI vorhanden ist
+- VersionAdapter-Erkennung für 1.21.x, 1.21.6+ und zukünftige 26.1.x-Familien
+- Services für Daily-/Weekly-Reset-Prüfung, NPC-Verknüpfungen, Dialog-Angebote und Titelstatus
+
+## Phase 7
+
+API-, Import- und externe Verwaltungsgrundlagen sind vorhanden:
+
+- Lokale HTTP-API unter `/api/health`, `/api/stats/overview` und `/api/admin/quests`
+- API ist standardmäßig deaktiviert und nutzt die Tokens aus `server.yml`
+- Konfiguration unter `api.enabled`, `api.host`, `api.port` und `api.worker-threads`
+- Import-Service erzeugt einen Report für spätere QuestsPlugin-Importläufe
+- Server-ID, Storage, Hooks, Version und Questliste sind über die API auslesbar
+
+## Phase 8
+
+Admin-, Debug- und Inspect-Befehle sind vorhanden:
+
+- `/quests list` listet geladene Quests
+- `/quests info <questId>` zeigt Questdetails
+- `/quests progress [player]` zeigt Spielerfortschritt
+- `/quests debug hooks|storage|version|services` zeigt Laufzeitstatus
+- `/quests import questsplugin` erzeugt einen Import-Report
+
+## Phase 9
+
+Die erste Testbasis ist vorhanden:
+
+- JUnit 5 und Surefire sind eingerichtet
+- Quest-Serializer-Roundtrip wird getestet
+- Objective-Fortschritt und Completion-Erkennung werden getestet
+- Requirement-Auswertung für Vorquests, Ruf, Titel und Achievements wird getestet
+- PlayerQuestData-Serialisierung inklusive Punkte, Ruf, Titel und Achievements wird getestet
+
 ## Build
 
 ```powershell
@@ -96,28 +157,16 @@ Das fertige Plugin-JAR wird unter `target/CraftplayQuests-0.1.0-SNAPSHOT.jar` er
 - Minecraft 1.21.x als aktuelle API-Basis
 - Spätere Versionsunterschiede werden über ein Adapter-System gekapselt
 
-## Bewusst Später
+## Noch zu Prüfen
 
-Diese Systeme sind noch nicht implementiert und werden später phasenweise ergänzt:
+Der Plugin-Kern ist jetzt gebaut. Vor einem produktiven Release fehlen vor allem echte Server-Smoke-Tests:
 
-- Vollständige Requirement-Auswertung über Hooks, Items, Permissions, Jobs, Placeholder und Fraktionen
-- Vollständige Reward-Ausgabe mit Items, Geld, Commands, Permissions, Titeln und Achievements
-- MySQL-/MariaDB-StorageProvider und Redis-CacheProvider als produktive Provider
-- DirtyQueue, Batch-Saves und Storage-Migrationen
-- Laufendes GUI-System mit Inventaröffnung und Klickverarbeitung
-- PlaceholderAPI-Integration
-- Citizens-NPC-System
-- Floodgate-Bedrock-Forms
-- LuckPerms-, Vault-, CMI-, Jobs- und HeadDatabase-Hooks
-- Multi-Version-Adapter für 1.21.x und 26.1.x
-- Daily-/Weekly-Reset
-- NPC-Questrotation
-- Dialogsystem
-- Titel über TextDisplay
-- Achievements und Advancements
-- Teampanel- und Homepage-API
-- Importer vom Quests-Plugin
-- Unit-, Integrations- und Server-Smoke-Tests
+- Start auf Paper/Purpur mit Java 21
+- Questannahme, Fortschritt, Abschluss, Speicherung und GUI-Klicks im Spiel
+- H2- und YAML-Fallback mit echten Plugin-Datenordnern
+- Optionale Hook-Tests mit PlaceholderAPI, Citizens, Floodgate, LuckPerms und Vault
+- HTTP-API mit echten `server.yml`-Tokens
+- Import-Report und spätere echte Import-Migrationen
 
 ## Entwicklungsregeln
 

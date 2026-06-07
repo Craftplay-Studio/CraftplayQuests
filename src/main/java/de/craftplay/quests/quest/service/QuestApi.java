@@ -31,6 +31,8 @@ public interface QuestApi {
 
     CompletableFuture<PlayerQuestData> playerData(UUID playerId);
 
+    Optional<PlayerQuestData> cachedPlayerData(UUID playerId);
+
     CompletableFuture<ObjectiveProgressResult> recordObjectiveProgress(
         UUID playerId,
         ObjectiveType type,

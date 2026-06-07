@@ -32,6 +32,13 @@ commands:
   reload: "{prefix} <green>Configuración, idioma y datos del servidor recargados.</green>"
   version: "{prefix} <gray>Versión:</gray> <yellow>{version}</yellow> <dark_gray>|</dark_gray> <gray>ID del servidor:</gray> <yellow>{server_id}</yellow>"
   usage: "{prefix} <red>Uso: <yellow>{usage}</yellow></red>"
+  quest-list-header: "{prefix} <gray>Misiones cargadas: <yellow>{count}</yellow></gray>"
+  quest-list-entry: "{prefix} <yellow>{quest}</yellow> <gray>- {name} | Tipo: <gold>{type}</gold> | Activa: <gold>{enabled}</gold></gray>"
+  quest-info: "{prefix} <yellow>{quest}</yellow> <gray>- {name} | Categoría: <gold>{category}</gold> | Tipo: <gold>{type}</gold> | Dificultad: <gold>{difficulty}</gold> | Objetivos: <gold>{objectives}</gold> | Requisitos: <gold>{requirements}</gold> | Recompensas: <gold>{rewards}</gold> | Activa: <gold>{enabled}</gold></gray>"
+  player-progress: "{prefix} <gray>{player}: Activas <yellow>{active}</yellow>, Completadas <yellow>{completed}</yellow>, Puntos <yellow>{points}</yellow>, Reputación <yellow>{reputation}</yellow>, Logros <yellow>{achievements}</yellow>, Título <yellow>{title}</yellow></gray>"
+  debug-storage: "{prefix} <gray>Storage: <yellow>{storage}</yellow> | Misiones: <yellow>{quests}</yellow> | API: <yellow>{api}</yellow></gray>"
+  debug-version: "{prefix} <gray>Adaptador: <yellow>{adapter}</yellow> | Versión: <yellow>{version}</yellow> | TextDisplay: <yellow>{text_display}</yellow></gray>"
+  debug-hook: "{prefix} <gray>Hook <yellow>{hook}</yellow>: <yellow>{enabled}</yellow></gray>"
   help:
     - "{prefix} <yellow>/quests</yellow> <gray>- abre el menú de misiones.</gray>"
     - "{prefix} <yellow>/quests active</yellow> <gray>- muestra misiones activas.</gray>"
@@ -245,6 +252,7 @@ api:
   audit-created: "Entrada de auditoría creada"
 
 import:
+  report-created: "{prefix} <green>Reporte de importación creado: <yellow>{file}</yellow></green>"
   started: "{prefix} <yellow>Importación iniciada: <gold>{importer}</gold></yellow>"
   backup-created: "{prefix} <green>Backup creado: <yellow>{file}</yellow></green>"
   finished: "{prefix} <green>Importación terminada. Éxito: <yellow>{success}</yellow>, omitidas: <yellow>{skipped}</yellow>.</green>"

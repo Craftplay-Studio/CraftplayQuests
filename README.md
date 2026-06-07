@@ -4,7 +4,7 @@ CraftplayQuests ist ein modulares Quest-, RPG-, NPC-, Achievement- und Statistik
 
 ## Projektstatus
 
-Aktueller Stand: Phase 1 ist umgesetzt.
+Aktueller Stand: Phase 1 ist umgesetzt und der vollständige Sprachkatalog für die geplanten Module ist vorbereitet.
 
 - Maven-Projekt mit Java 21
 - Paper-API als bereitgestellte Compile-Abhängigkeit
@@ -14,6 +14,8 @@ Aktueller Stand: Phase 1 ist umgesetzt.
 - First-Start-Bootstrap für Konfiguration, Sprache, GUI-Dateien, Speicherordner, Cache-Ordner, `lib`, `logs` und `temp`
 - Automatische `server.yml` mit Server-ID, Installations-Token, Recovery-Code und API-Tokens
 - Sprachsystem mit MiniMessage und UTF-8-Umlauten
+- Vollständige Sprachdateien für `de_DE`, `en_US`, `fr_FR`, `es_ES`, `it_IT`, `nl_NL`, `pl_PL`, `tr_TR`, `ru_RU` und `pt_BR`
+- Sprachkeys für Commands, GUIs, Quests, Ziele, Voraussetzungen, Belohnungen, Admin, NPCs, Dialoge, Titel, Achievements, Storage, Libraries, Hooks, Bedrock, Cache, Confirm, API, Import, VersionAdapter und Fehlerfälle
 - Erste frei konfigurierbare GUI-YAML-Dateien
 - MIT-Lizenz aus dem GitHub-Repository übernommen
 
@@ -31,6 +33,30 @@ Das fertige Plugin-JAR wird unter `target/CraftplayQuests-0.1.0-SNAPSHOT.jar` er
 - Paper/Purpur
 - Minecraft 1.21.x als aktuelle API-Basis
 - Spätere Versionsunterschiede werden über ein Adapter-System gekapselt
+
+## Bewusst Später
+
+Diese Systeme sind noch nicht implementiert und werden später phasenweise ergänzt:
+
+- Echte Questlogik, Quest-Modell, Quest-Registry, Quest-API und Quest-Data
+- Ziele, Voraussetzungen und Belohnungen mit Laufzeitlogik
+- Storage-System mit YAML, H2, MySQL, MariaDB und Redis
+- AsyncTaskService, MainThreadService, DirtyQueue und Batch-Saves
+- LibraryLoaderService für Datenbank- und Redis-Libraries
+- Laufendes GUI-System mit Inventaröffnung und Klickverarbeitung
+- PlaceholderAPI-Integration
+- Citizens-NPC-System
+- Floodgate-Bedrock-Forms
+- LuckPerms-, Vault-, CMI-, Jobs- und HeadDatabase-Hooks
+- Multi-Version-Adapter für 1.21.x und 26.1.x
+- Daily-/Weekly-Reset
+- NPC-Questrotation
+- Dialogsystem
+- Titel über TextDisplay
+- Achievements und Advancements
+- Teampanel- und Homepage-API
+- Importer vom Quests-Plugin
+- Unit-, Integrations- und Server-Smoke-Tests
 
 ## Entwicklungsregeln
 

@@ -1,0 +1,11 @@
+locale: "nl_NL"
+
+commands:
+  no-permission: "{prefix} <red>Je hebt hier geen toestemming voor.</red>"
+  unknown: "{prefix} <red>Onbekend commando. Gebruik <yellow>/quests help</yellow>.</red>"
+  reload: "{prefix} <green>Configuratie, taal en servergegevens zijn herladen.</green>"
+  version: "{prefix} <gray>Versie:</gray> <yellow>{version}</yellow> <dark_gray>|</dark_gray> <gray>Server-ID:</gray> <yellow>{server_id}</yellow>"
+  help:
+    - "{prefix} <yellow>/quests</yellow> <gray>- toont dit overzicht.</gray>"
+    - "{prefix} <yellow>/quests version</yellow> <gray>- toont pluginversie en server-ID.</gray>"
+    - "{prefix} <yellow>/quests reload</yellow> <gray>- herlaadt de configuratie.</gray>"

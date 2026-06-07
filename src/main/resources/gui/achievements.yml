@@ -1,0 +1,28 @@
+title: "<gold>Achievements</gold>"
+size: 54
+
+achievement-slots:
+  slots: [10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34]
+
+locked-icon:
+  material: "GRAY_DYE"
+  name: "<gray>Gesperrt</gray>"
+  lore:
+    - "<dark_gray>Noch nicht freigeschaltet.</dark_gray>"
+
+unlocked-icon:
+  glow: true
+
+back-button:
+  enabled: true
+  slot: 48
+  material: "ARROW"
+  name: "<yellow>Zurück</yellow>"
+  action: "BACK"
+
+close-button:
+  enabled: true
+  slot: 49
+  material: "BARRIER"
+  name: "<red>Schließen</red>"
+  action: "CLOSE"

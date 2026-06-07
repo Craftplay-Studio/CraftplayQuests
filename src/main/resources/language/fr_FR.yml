@@ -1,0 +1,11 @@
+locale: "fr_FR"
+
+commands:
+  no-permission: "{prefix} <red>Vous n'avez pas la permission.</red>"
+  unknown: "{prefix} <red>Commande inconnue. Utilisez <yellow>/quests help</yellow>.</red>"
+  reload: "{prefix} <green>Configuration, langue et parametres serveur recharges.</green>"
+  version: "{prefix} <gray>Version :</gray> <yellow>{version}</yellow> <dark_gray>|</dark_gray> <gray>ID serveur :</gray> <yellow>{server_id}</yellow>"
+  help:
+    - "{prefix} <yellow>/quests</yellow> <gray>- affiche cette vue.</gray>"
+    - "{prefix} <yellow>/quests version</yellow> <gray>- affiche la version et l'ID serveur.</gray>"
+    - "{prefix} <yellow>/quests reload</yellow> <gray>- recharge la configuration.</gray>"

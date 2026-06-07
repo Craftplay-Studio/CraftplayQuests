@@ -1,0 +1,36 @@
+title: "<dark_red>Admin: Quests</dark_red>"
+size: 54
+
+quest-slots:
+  slots: [10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34]
+
+buttons:
+  create:
+    enabled: true
+    slot: 46
+    material: "LIME_DYE"
+    name: "<green>Quest erstellen</green>"
+    permission: "craftplayquests.admin.quests"
+    action: "CREATE_QUEST"
+  import:
+    enabled: true
+    slot: 52
+    material: "HOPPER"
+    name: "<yellow>Importer</yellow>"
+    permission: "craftplayquests.admin.import"
+    hide-without-permission: true
+    action: "OPEN_IMPORT"
+
+back-button:
+  enabled: true
+  slot: 48
+  material: "ARROW"
+  name: "<yellow>Zurück</yellow>"
+  action: "BACK"
+
+close-button:
+  enabled: true
+  slot: 49
+  material: "BARRIER"
+  name: "<red>Schließen</red>"
+  action: "CLOSE"

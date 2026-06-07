@@ -1,0 +1,87 @@
+name: CraftplayQuests
+version: ${project.version}
+main: de.craftplay.quests.CraftplayQuestsPlugin
+api-version: '1.21'
+author: Wullverin
+description: Modular quest, RPG, NPC, achievement and statistics system for Paper/Purpur.
+prefix: CraftplayQuests
+load: POSTWORLD
+softdepend:
+  - Citizens
+  - PlaceholderAPI
+  - CMI
+  - Jobs
+  - HeadDatabase
+  - floodgate
+  - LuckPerms
+  - Vault
+commands:
+  quests:
+    description: Opens the CraftplayQuests command menu.
+    usage: /quests
+    aliases:
+      - quest
+      - cpquests
+      - q
+      - cpq
+permissions:
+  craftplayquests.use:
+    description: Allows using CraftplayQuests.
+    default: true
+  craftplayquests.menu:
+    description: Allows opening the quest menu.
+    default: true
+  craftplayquests.book:
+    description: Allows opening the adventure book.
+    default: true
+  craftplayquests.achievements:
+    description: Allows viewing achievements.
+    default: true
+  craftplayquests.title:
+    description: Allows selecting RPG titles.
+    default: true
+  craftplayquests.admin:
+    description: Grants all CraftplayQuests admin permissions.
+    default: op
+    children:
+      craftplayquests.use: true
+      craftplayquests.menu: true
+      craftplayquests.book: true
+      craftplayquests.achievements: true
+      craftplayquests.title: true
+      craftplayquests.admin.editor: true
+      craftplayquests.admin.quests: true
+      craftplayquests.admin.npcs: true
+      craftplayquests.admin.categories: true
+      craftplayquests.admin.titles: true
+      craftplayquests.admin.achievements: true
+      craftplayquests.admin.import: true
+      craftplayquests.admin.cache: true
+      craftplayquests.admin.reload: true
+  craftplayquests.admin.editor:
+    description: Allows using the admin editor.
+    default: op
+  craftplayquests.admin.quests:
+    description: Allows administrating quests.
+    default: op
+  craftplayquests.admin.npcs:
+    description: Allows administrating NPCs.
+    default: op
+  craftplayquests.admin.categories:
+    description: Allows administrating quest categories.
+    default: op
+  craftplayquests.admin.titles:
+    description: Allows administrating titles.
+    default: op
+  craftplayquests.admin.achievements:
+    description: Allows administrating achievements.
+    default: op
+  craftplayquests.admin.import:
+    description: Allows running importers.
+    default: op
+  craftplayquests.admin.cache:
+    description: Allows administrating caches.
+    default: op
+  craftplayquests.admin.reload:
+    description: Allows reloading CraftplayQuests.
+    default: op

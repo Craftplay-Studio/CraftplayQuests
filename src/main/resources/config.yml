@@ -1,0 +1,93 @@
+settings:
+  language: "de_DE"
+  prefix: "<gradient:#4de3b0:#f7c948>CraftplayQuests</gradient> <dark_gray>|</dark_gray>"
+
+storage:
+  type: "H2"
+  h2:
+    file: "save/h2/quests"
+  yaml:
+    folder: "save/yaml"
+  mysql:
+    host: "localhost"
+    port: 3306
+    database: "craftplay_quests"
+    username: "root"
+    password: "change_me"
+  mariadb:
+    host: "localhost"
+    port: 3306
+    database: "craftplay_quests"
+    username: "root"
+    password: "change_me"
+
+redis:
+  enabled: false
+  host: "localhost"
+  port: 6379
+  password: ""
+  database: 0
+  use-for:
+    cache: true
+    network-sync: true
+    leaderboard-cache: true
+
+libraries:
+  auto-download: true
+  cache-folder: "lib"
+  repositories:
+    - "https://repo1.maven.org/maven2/"
+  required:
+    mysql: true
+    mariadb: true
+    h2: true
+    redis: true
+
+performance:
+  async-workers: 4
+  save-interval-seconds: 30
+  database-batch-size: 100
+  placeholder-check-interval-seconds: 10
+  leaderboard-refresh-seconds: 300
+  api-cache-refresh-seconds: 300
+
+quest-resets:
+  daily:
+    enabled: true
+    time: "00:00"
+  weekly:
+    enabled: true
+    day: "SUNDAY"
+    time: "23:59"
+  expired-quests:
+    cancel-open-quests: true
+    notify-player: true
+
+titles:
+  enabled: true
+  update-interval-ticks: 10
+  view-distance: 32
+  hide-while-sneaking: true
+  hide-in-vanish: true
+  only-show-if-title-selected: true
+
+cache:
+  skins:
+    enabled: true
+    permanent: true
+    expire-after-days: -1
+  heads:
+    enabled: true
+    permanent: true
+    expire-after-days: -1
+
+confirm:
+  enabled: true
+  code-length: 8
+  expire-seconds: 60
+  require-for:
+    cache-clear-all: true
+    cache-clear-skins: true
+    cache-clear-heads: true
+    data-reset: true
+    import-overwrite: true

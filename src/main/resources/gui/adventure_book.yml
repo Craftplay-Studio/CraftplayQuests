@@ -1,0 +1,48 @@
+title: "<gold>Abenteuerbuch</gold>"
+size: 54
+
+buttons:
+  quests:
+    enabled: true
+    slot: 20
+    material: "BOOK"
+    name: "<green>Quests</green>"
+    action: "OPEN_GUI:player_quests"
+  reputation:
+    enabled: true
+    slot: 22
+    material: "EMERALD"
+    name: "<green>Ruf</green>"
+    action: "OPEN_REPUTATION"
+  titles:
+    enabled: true
+    slot: 24
+    material: "NAME_TAG"
+    name: "<gold>Titel</gold>"
+    action: "OPEN_TITLES"
+  discoveries:
+    enabled: true
+    slot: 30
+    material: "SPYGLASS"
+    name: "<aqua>Entdeckungen</aqua>"
+    action: "OPEN_DISCOVERIES"
+  statistics:
+    enabled: true
+    slot: 32
+    material: "PAPER"
+    name: "<yellow>Statistiken</yellow>"
+    action: "OPEN_STATISTICS"
+
+back-button:
+  enabled: true
+  slot: 48
+  material: "ARROW"
+  name: "<yellow>Zurück</yellow>"
+  action: "BACK"
+
+close-button:
+  enabled: true
+  slot: 49
+  material: "BARRIER"
+  name: "<red>Schließen</red>"
+  action: "CLOSE"

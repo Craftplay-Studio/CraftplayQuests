@@ -1,0 +1,46 @@
+title: "<gold>Questdetails</gold>"
+size: 54
+
+quest-icon:
+  slot: 13
+  name: "<yellow>%quest_name%</yellow>"
+  lore:
+    - "<gray>%quest_description%</gray>"
+    - ""
+    - "<gray>Kategorie: <green>%quest_category%</green></gray>"
+    - "<gray>Schwierigkeit: <gold>%quest_difficulty%</gold></gray>"
+    - "<gray>Dauer: <aqua>%quest_duration%</aqua></gray>"
+
+buttons:
+  accept:
+    enabled: true
+    slot: 29
+    material: "LIME_CONCRETE"
+    name: "<green>Annehmen</green>"
+    action: "ACCEPT_QUEST"
+  decline:
+    enabled: true
+    slot: 33
+    material: "RED_CONCRETE"
+    name: "<red>Ablehnen</red>"
+    action: "DECLINE_QUEST"
+  track:
+    enabled: true
+    slot: 31
+    material: "COMPASS"
+    name: "<aqua>Verfolgen</aqua>"
+    action: "TRACK_QUEST"
+
+back-button:
+  enabled: true
+  slot: 48
+  material: "ARROW"
+  name: "<yellow>Zurück</yellow>"
+  action: "BACK"
+
+close-button:
+  enabled: true
+  slot: 49
+  material: "BARRIER"
+  name: "<red>Schließen</red>"
+  action: "CLOSE"

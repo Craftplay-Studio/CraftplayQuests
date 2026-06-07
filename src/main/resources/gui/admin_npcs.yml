@@ -1,0 +1,35 @@
+title: "<dark_red>Admin: NPCs</dark_red>"
+size: 54
+
+npc-slots:
+  slots: [10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34]
+
+buttons:
+  create:
+    enabled: true
+    slot: 46
+    material: "VILLAGER_SPAWN_EGG"
+    name: "<green>NPC erstellen</green>"
+    permission: "craftplayquests.admin.npcs"
+    action: "CREATE_NPC"
+  routes:
+    enabled: true
+    slot: 52
+    material: "RAIL"
+    name: "<yellow>Routen</yellow>"
+    permission: "craftplayquests.admin.npcs"
+    action: "OPEN_NPC_ROUTES"
+
+back-button:
+  enabled: true
+  slot: 48
+  material: "ARROW"
+  name: "<yellow>Zurück</yellow>"
+  action: "BACK"
+
+close-button:
+  enabled: true
+  slot: 49
+  material: "BARRIER"
+  name: "<red>Schließen</red>"
+  action: "CLOSE"

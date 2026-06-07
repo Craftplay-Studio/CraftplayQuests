@@ -1,0 +1,60 @@
+title: "<gold>Craftplay Quests</gold>"
+size: 54
+
+decorations:
+  border:
+    enabled: true
+    slots: [0,1,2,3,4,5,6,7,8,45,46,47,48,50,51,52,53]
+    material: "BLACK_STAINED_GLASS_PANE"
+    name: " "
+
+buttons:
+  profile:
+    enabled: true
+    slot: 13
+    material: "PLAYER_HEAD"
+    owner: "%player%"
+    name: "<yellow>%player%</yellow>"
+    lore:
+      - "<gray>Abgeschlossene Quests: <green>%cpquests_completed%</green></gray>"
+      - "<gray>Questpunkte: <gold>%cpquests_points%</gold></gray>"
+    action: "OPEN_PLAYER_QUESTS"
+  categories:
+    enabled: true
+    slot: 20
+    material: "BOOK"
+    name: "<green>Quest-Kategorien</green>"
+    lore:
+      - "<gray>Öffnet alle verfügbaren Kategorien.</gray>"
+    action: "OPEN_GUI:quest_categories"
+  active:
+    enabled: true
+    slot: 22
+    material: "COMPASS"
+    name: "<aqua>Aktive Quests</aqua>"
+    lore:
+      - "<gray>Zeigt deine laufenden Quests.</gray>"
+    action: "OPEN_PLAYER_QUESTS"
+  achievements:
+    enabled: true
+    slot: 24
+    material: "NETHER_STAR"
+    name: "<light_purple>Achievements</light_purple>"
+    lore:
+      - "<gray>Zeigt deine Erfolge.</gray>"
+    action: "OPEN_GUI:achievements"
+  adventure-book:
+    enabled: true
+    slot: 31
+    material: "WRITABLE_BOOK"
+    name: "<gold>Abenteuerbuch</gold>"
+    lore:
+      - "<gray>Quests, Ruf, Titel und Entdeckungen.</gray>"
+    action: "OPEN_GUI:adventure_book"
+
+close-button:
+  enabled: true
+  slot: 49
+  material: "BARRIER"
+  name: "<red>Schließen</red>"
+  action: "CLOSE"

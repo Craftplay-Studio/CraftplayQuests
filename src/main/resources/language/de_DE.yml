@@ -1,0 +1,11 @@
+locale: "de_DE"
+
+commands:
+  no-permission: "{prefix} <red>Dafür hast du keine Berechtigung.</red>"
+  unknown: "{prefix} <red>Unbekannter Befehl. Nutze <yellow>/quests help</yellow>.</red>"
+  reload: "{prefix} <green>Konfiguration, Sprache und Serverdaten wurden neu geladen.</green>"
+  version: "{prefix} <gray>Version:</gray> <yellow>{version}</yellow> <dark_gray>|</dark_gray> <gray>Server-ID:</gray> <yellow>{server_id}</yellow>"
+  help:
+    - "{prefix} <yellow>/quests</yellow> <gray>- zeigt diese Übersicht.</gray>"
+    - "{prefix} <yellow>/quests version</yellow> <gray>- zeigt Plugin-Version und Server-ID.</gray>"
+    - "{prefix} <yellow>/quests reload</yellow> <gray>- lädt die Konfiguration neu.</gray>"

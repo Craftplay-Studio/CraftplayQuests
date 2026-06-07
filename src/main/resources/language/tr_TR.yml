@@ -1,0 +1,11 @@
+locale: "tr_TR"
+
+commands:
+  no-permission: "{prefix} <red>Bunun icin yetkin yok.</red>"
+  unknown: "{prefix} <red>Bilinmeyen komut. <yellow>/quests help</yellow> kullan.</red>"
+  reload: "{prefix} <green>Yapilandirma, dil ve sunucu ayarlari yenilendi.</green>"
+  version: "{prefix} <gray>Surum:</gray> <yellow>{version}</yellow> <dark_gray>|</dark_gray> <gray>Sunucu ID:</gray> <yellow>{server_id}</yellow>"
+  help:
+    - "{prefix} <yellow>/quests</yellow> <gray>- bu ozeti gosterir.</gray>"
+    - "{prefix} <yellow>/quests version</yellow> <gray>- eklenti surumunu ve sunucu ID'sini gosterir.</gray>"
+    - "{prefix} <yellow>/quests reload</yellow> <gray>- yapilandirmayi yeniler.</gray>"

@@ -1,0 +1,11 @@
+locale: "ru_RU"
+
+commands:
+  no-permission: "{prefix} <red>U vas net prav dlya etogo.</red>"
+  unknown: "{prefix} <red>Neizvestnaya komanda. Ispolzuyte <yellow>/quests help</yellow>.</red>"
+  reload: "{prefix} <green>Konfiguraciya, yazyk i dannye servera perezagruzheny.</green>"
+  version: "{prefix} <gray>Versiya:</gray> <yellow>{version}</yellow> <dark_gray>|</dark_gray> <gray>ID servera:</gray> <yellow>{server_id}</yellow>"
+  help:
+    - "{prefix} <yellow>/quests</yellow> <gray>- pokazyvaet etot obzor.</gray>"
+    - "{prefix} <yellow>/quests version</yellow> <gray>- pokazyvaet versiyu i ID servera.</gray>"
+    - "{prefix} <yellow>/quests reload</yellow> <gray>- perezagruzhaet konfiguraciyu.</gray>"

@@ -1,0 +1,51 @@
+title: "<dark_red>CraftplayQuests Admin</dark_red>"
+size: 54
+
+buttons:
+  quests:
+    enabled: true
+    slot: 10
+    material: "WRITABLE_BOOK"
+    name: "<gold>Quests</gold>"
+    permission: "craftplayquests.admin.quests"
+    hide-without-permission: true
+    action: "OPEN_GUI:admin_quests"
+  npcs:
+    enabled: true
+    slot: 12
+    material: "VILLAGER_SPAWN_EGG"
+    name: "<green>NPCs</green>"
+    permission: "craftplayquests.admin.npcs"
+    hide-without-permission: true
+    action: "OPEN_GUI:admin_npcs"
+  categories:
+    enabled: true
+    slot: 14
+    material: "CHEST"
+    name: "<yellow>Kategorien</yellow>"
+    permission: "craftplayquests.admin.categories"
+    hide-without-permission: true
+    action: "OPEN_GUI:admin_categories"
+  titles:
+    enabled: true
+    slot: 16
+    material: "NAME_TAG"
+    name: "<aqua>Titel</aqua>"
+    permission: "craftplayquests.admin.titles"
+    hide-without-permission: true
+    action: "OPEN_GUI:admin_titles"
+  settings:
+    enabled: true
+    slot: 31
+    material: "COMPARATOR"
+    name: "<red>Einstellungen</red>"
+    permission: "craftplayquests.admin.reload"
+    hide-without-permission: true
+    action: "OPEN_GUI:admin_settings"
+
+close-button:
+  enabled: true
+  slot: 49
+  material: "BARRIER"
+  name: "<red>Schließen</red>"
+  action: "CLOSE"

@@ -1,0 +1,42 @@
+title: "<dark_red>Admin: Einstellungen</dark_red>"
+size: 54
+
+buttons:
+  reload:
+    enabled: true
+    slot: 20
+    material: "REDSTONE"
+    name: "<yellow>Neu laden</yellow>"
+    permission: "craftplayquests.admin.reload"
+    hide-without-permission: true
+    action: "PLAYER_COMMAND:quests reload"
+  cache:
+    enabled: true
+    slot: 22
+    material: "BARREL"
+    name: "<gold>Cache</gold>"
+    permission: "craftplayquests.admin.cache"
+    hide-without-permission: true
+    action: "OPEN_CACHE_ADMIN"
+  system:
+    enabled: true
+    slot: 24
+    material: "COMMAND_BLOCK"
+    name: "<red>API/System</red>"
+    permission: "craftplayquests.admin"
+    hide-without-permission: true
+    action: "OPEN_SYSTEM_ADMIN"
+
+back-button:
+  enabled: true
+  slot: 48
+  material: "ARROW"
+  name: "<yellow>Zurück</yellow>"
+  action: "BACK"
+
+close-button:
+  enabled: true
+  slot: 49
+  material: "BARRIER"
+  name: "<red>Schließen</red>"
+  action: "CLOSE"
